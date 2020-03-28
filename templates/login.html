@@ -1,0 +1,57 @@
+{% extends "templates/login.html" %}
+{% block login %}
+<div class='container iotlab'>
+    <!-- <div class='iotlab'> -->
+        <span class='logo'><img src='https://www.iot-lab.info/testbed/img/disc-iotlab.5bdbd373.svg'></span>
+        <span class='welcome'>
+            <b>Welcome to the IoT-LAB JupyterHub!</b><br/>
+            Use your IoT-LAB credentials to login.<br/><br/>
+
+            You can create an account <a href="https://www.iot-lab.info/testbed/signup">here</a>.
+        </span>
+    <!-- </div> -->
+</div>
+
+{{ super() }}
+
+{% endblock %}
+
+{% block stylesheet %}
+{{ super() }}
+<style>
+
+.iotlab {
+    width: 450px;
+    height: 100px;
+}
+
+#login-main {
+    margin-top: 2%;
+    height: 100%;
+}
+
+.logo img {
+    display: block;
+    width: 90px;
+}
+
+span.welcome  {
+    float: right;
+    display: block;
+    margin: 0 auto 0 auto;
+    padding: 5px 5px;
+    text-align: center;
+    margin-right: 25px;
+    margin-top: 10px;
+}
+
+ span.logo {
+    float: left;
+    display: block;
+    margin: 0 auto 0 auto;
+    padding: 5px 5px;
+    margin-left: 25px;
+}
+
+</style>
+{% endblock %}

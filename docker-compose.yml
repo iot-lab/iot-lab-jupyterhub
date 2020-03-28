@@ -1,0 +1,30 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
+# JupyterHub docker-compose configuration file
+version: "3"
+
+services:
+  hub:
+    user: "0:0"
+    ports:
+      - "8000:8000"
+    restart: always
+    image: aabadie/iot-lab-training-hub
+    container_name: jupyterhub
+    networks:
+      default:
+        aliases:
+          - jupyterhub
+    volumes:
+      # Bind Docker socket on the host so we can connect to the daemon from
+      # within the container
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+      - "/tmp/iotlab/users:/srv/jupyterhub/users"
+    command: >
+      jupyterhub -f /srv/jupyterhub/jupyterhub_config.py
+
+networks:
+  default:
+    external:
+      name: jupyterhub
