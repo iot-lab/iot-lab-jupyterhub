@@ -18,16 +18,18 @@ c.JupyterHub.hub_connect_ip = 'jupyterhub'
 # in it as our Hub.
 c.DockerSpawner.image = 'aabadie/iot-lab-training-notebooks'
 
-# # tell the user containers to connect to our docker network
+# tell the user containers to connect to our docker network
 c.DockerSpawner.network_name = 'jupyterhub'
 
-# # delete containers when the stop
+# delete containers when the stop
 c.DockerSpawner.remove = True
 
+# Use jupyterlab
 c.Spawner.default_url = '/lab'
 
 JUPYTERHUB_DOTSSH_PATH = '/tmp/iotlab/users/{}/.ssh'
 JUPYTERHUB_IOTLABRC_PATH = '/tmp/iotlab/users/{}/.iotlabrc'
+
 
 def spawner_hook(spawner):
     username = spawner.user.name
@@ -40,10 +42,8 @@ def spawner_hook(spawner):
 
     spawner.volumes = {
         iotlabrc_path: '/home/jovyan/.iotlabrc',
+        dotssh_path: '/home/jovyan/.ssh'
     }
-
-    if os.path.exists(JUPYTERHUB_DOTSSH_PATH.format(username)):
-        spawner.volumes.update({dotssh_path: '/home/jovyan/.ssh'})
 
 
 c.DockerSpawner.pre_spawn_hook = spawner_hook
