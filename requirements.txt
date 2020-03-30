@@ -1,3 +1,2 @@
 dockerspawner
-jupyterhub-dummyauthenticator
 jupyterlab==2.0.1

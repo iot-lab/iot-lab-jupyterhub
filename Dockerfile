@@ -2,6 +2,8 @@ FROM jupyterhub/jupyterhub
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    iproute2 \
+    iputils-ping \
     openssh-client \
     && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
