@@ -13,12 +13,12 @@
 
 - Build the jupyterhub container (from the base directory of this repository):
   ```
-  docker build . -t aabadie/iot-lab-training-hub
+  docker build . -t aabadie/iot-lab-jupyterhub
   ```
 
 - Build the docker image used for the Jupyterlab notebooks:
   ```
-  docker build notebooks/. -t aabadie/iot-lab-training-notebooks
+  docker build notebooks/. -t aabadie/iot-lab-jupyterlab
   ```
 
 - Create a docker network:

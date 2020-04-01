@@ -6,7 +6,7 @@ services:
     ports:
       - "8000:8000"
     restart: always
-    image: aabadie/iot-lab-training-hub
+    image: aabadie/iot-lab-jupyterhub
     container_name: jupyterhub
     networks:
       default:
