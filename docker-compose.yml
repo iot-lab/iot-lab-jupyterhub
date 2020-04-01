@@ -11,16 +11,22 @@ services:
     networks:
       default:
         aliases:
-          - jupyterhub
+          - ${DOCKER_NETWORK_NAME}
+    environment:
+      - DOCKER_NETWORK_NAME
+      - JUPYTERHUB_HUB_IP
+      - JUPYTERHUB_USERS_DIR
+      - JUPYTERLAB_DOCKER_IMAGE
+      - JUPYTERLAB_USERNAME
     volumes:
       # Bind Docker socket on the host so we can connect to the daemon from
       # within the container
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
-      - "/tmp/iotlab/users:/srv/jupyterhub/users"
+      - "${JUPYTERHUB_USERS_DIR}:/srv/jupyterhub/users"
     command: >
-      jupyterhub -f /srv/jupyterhub/jupyterhub_config.py
+      jupyterhub -f /srv/jupyterhub/iotlab_config.py
 
 networks:
   default:
     external:
-      name: jupyterhub
+      name: ${DOCKER_NETWORK_NAME}

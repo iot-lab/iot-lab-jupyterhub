@@ -23,7 +23,7 @@
 
 - Create a docker network:
   ```
-  docker network create jupyterhub
+  docker network create iotlab
   ```
 
 - Launch Jupyterhub:

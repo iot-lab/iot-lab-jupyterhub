@@ -2,11 +2,11 @@ import os
 
 # Retrieve useful environment variables
 DOCKER_NETWORK_NAME = os.getenv('DOCKER_NETWORK_NAME', 'jupyterhub')
-JUPYTERHUB_USERS_DIR = os.getenv('JUPUTERHUB_USERS_DIR', '/tmp/iotlab/users/')
+JUPYTERHUB_USERS_DIR = os.getenv('JUPYTERHUB_USERS_DIR', '/tmp/users')
+JUPYTERHUB_HUB_IP = os.getenv('JUPYTERHUB_HUB_IP', '0.0.0.0')
 JUPYTERLAB_USERNAME = os.getenv('JUPUTERLAB_USERNAME', 'jovyan')
 JUPYTERLAB_DOCKER_IMAGE = os.getenv('JUPYTERLAB_DOCKER_IMAGE',
                                     'aabadie/iot-lab-training-notebooks')
-JUPYTERHUB_HUB_IP = os.getenv('JUPYTERHUB_HUB_IP', '0.0.0.0')
 
 # General configuration
 
