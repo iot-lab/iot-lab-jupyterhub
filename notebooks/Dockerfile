@@ -42,6 +42,8 @@ RUN pip3 install --no-cache \
     iotlabwscli==0.2.0 \
     jupyterlab==2.0.1
 
+RUN pip3 install -U --no-cache git+https://github.com/aabadie/cli-tools.git@ssh_key
+
 ENV SHELL /bin/bash
 
 RUN rm -rf ${HOME}/work
