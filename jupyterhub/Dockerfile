@@ -24,4 +24,13 @@ COPY templates/login.html /srv/jupyterhub/iotlab_template/login.html
 # Download script to automatically stop idle single-user servers
 RUN wget https://raw.githubusercontent.com/jupyterhub/jupyterhub/1.1.0/examples/cull-idle/cull_idle_servers.py
 
+# Create user with same uid as the one used in jupyterlab containers
+# This ensures the iotlabrc and file .ssh directory have the right ownership.
+ARG NB_UID=1000
+RUN adduser --disabled-password \
+    --gecos "Iotlab user" \
+    --uid ${NB_UID} \
+    iotlab
+
 RUN mkdir -p /srv/jupyterhub/users
+RUN chown ${NB_UID}:users /srv/jupyterhub/users

@@ -42,6 +42,12 @@ def setup_account(username, password):
         ret = subprocess.call(cmd)
         logging.info('Result: %d', ret)
 
+    # Force ownership of the user iotlabrc file and .ssh directory
+    cmd = "chown -R 1000:100 {}".format(ssh_path)
+    subprocess.call(shlex.split(cmd))
+    cmd = "chown -R 1000:100 {}".format(iotlabrc_path)
+    subprocess.call(shlex.split(cmd))
+
 
 class IotlabAuthenticator(Authenticator):
 
