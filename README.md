@@ -30,11 +30,3 @@
 
 You can login with an iot-lab account. The .iotlabrc and SSH keys are created
 on the fly
-
-**Important:** After the first connection, **from the host computer**, the
-ownerhip of the directory containing the users login information
-(.iotlabrc and .ssh) must be updated! This is part of future improvements...
-
-```
-sudo chown -R 1000:100 /tmp/iotlab/users
-```
