@@ -11,6 +11,11 @@
   mkdir -p /tmp/iotlab/users
   ```
 
+- Clone iot-lab-training in the `/tmp/iotlab/users` directory:
+  ```
+  git clone https://github.com/iot-lab/iot-lab-training /tmp/iotlab/users/.training
+  ```
+
 - Build the images for jupyterhub and jupyterlab:
   ```
   docker-compose build

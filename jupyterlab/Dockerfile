@@ -48,8 +48,6 @@ ENV SHELL /bin/bash
 
 WORKDIR ${HOME}/work
 
-RUN git clone https://github.com/iot-lab/iot-lab-training training
-
 RUN echo "cd ~/work/training" >> ${HOME}/.bashrc
 
 RUN chown -R ${NB_UID} ${HOME}

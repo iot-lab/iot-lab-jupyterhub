@@ -12,7 +12,8 @@ from tornado import gen
 
 from iotlabcli.rest import Api
 
-USER_PATH = '/srv/jupyterhub/users/{}'
+USERS_PATH = '/srv/jupyterhub/users'
+USER_PATH = os.path.join(USERS_PATH, '{}')
 
 
 @gen.coroutine
@@ -29,6 +30,8 @@ def setup_account(username, password):
         with open(iotlabrc_path, 'w') as f:
             f.write('{user}:{passwd}'.format(user=username,
                                              passwd=enc_password))
+        cmd = "chown -R 1000:100 {}".format(iotlabrc_path)
+        subprocess.call(shlex.split(cmd))
 
     ssh_path = os.path.join(user_path, '.ssh')
     if not os.path.exists(ssh_path):
@@ -41,12 +44,18 @@ def setup_account(username, password):
                           .format(os.path.join(id_rsa_path)))
         ret = subprocess.call(cmd)
         logging.info('Result: %d', ret)
+        cmd = "chown -R 1000:100 {}".format(ssh_path)
+        subprocess.call(shlex.split(cmd))
 
-    # Force ownership of the user iotlabrc file and .ssh directory
-    cmd = "chown -R 1000:100 {}".format(ssh_path)
-    subprocess.call(shlex.split(cmd))
-    cmd = "chown -R 1000:100 {}".format(iotlabrc_path)
-    subprocess.call(shlex.split(cmd))
+    training_default_path = os.path.join(USERS_PATH, '.training')
+    work_path = os.path.join(user_path, 'work')
+    training_path = os.path.join(work_path, 'training')
+    if not os.path.exists(training_path):
+        os.makedirs(work_path)
+        cmd = "cp -R {} {}".format(training_default_path, training_path)
+        subprocess.call(shlex.split(cmd))
+        cmd = "chown -R 1000:100 {}".format(work_path)
+        subprocess.call(shlex.split(cmd))
 
 
 class IotlabAuthenticator(Authenticator):

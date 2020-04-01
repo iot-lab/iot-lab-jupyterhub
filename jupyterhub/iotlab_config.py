@@ -60,6 +60,7 @@ def spawner_hook(spawner):
     username = spawner.user.name
     iotlabrc_path = os.path.join(JUPYTERHUB_USERS_DIR, username, '.iotlabrc')
     dotssh_path = os.path.join(JUPYTERHUB_USERS_DIR, username, '.ssh')
+    work_path = os.path.join(JUPYTERHUB_USERS_DIR, username, 'work')
 
     spawner.environment = {
         'IOTLAB_LOGIN': username
@@ -67,7 +68,8 @@ def spawner_hook(spawner):
 
     spawner.volumes = {
         iotlabrc_path: '/home/{}/.iotlabrc'.format(JUPYTERLAB_USERNAME),
-        dotssh_path: '/home/{}/.ssh'.format(JUPYTERLAB_USERNAME)
+        dotssh_path: '/home/{}/.ssh'.format(JUPYTERLAB_USERNAME),
+        work_path: '/home/{}/work'.format(JUPYTERLAB_USERNAME)
     }
 
 
