@@ -46,12 +46,11 @@ RUN pip3 install -U --no-cache git+https://github.com/aabadie/cli-tools.git@ssh_
 
 ENV SHELL /bin/bash
 
-RUN rm -rf ${HOME}/work
+WORKDIR ${HOME}/work
 
-WORKDIR ${HOME}
+RUN git clone https://github.com/iot-lab/iot-lab-training training
 
-RUN git clone https://github.com/iot-lab/iot-lab-training
-RUN mv iot-lab-training/* . && rm -rf iot-lab-training
+RUN echo "cd ~/work/training" >> ${HOME}/.bashrc
 
 RUN chown -R ${NB_UID} ${HOME}
 USER ${NB_USER}

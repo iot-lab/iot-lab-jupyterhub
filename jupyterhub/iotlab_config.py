@@ -18,6 +18,10 @@ c.JupyterHub.hub_connect_ip = 'jupyterhub'
 # Add path for IoT-LAB custom template
 c.JupyterHub.template_paths=['iotlab_template/.']
 
+# Set some limit
+c.Spawner.cpu_limit = 1
+c.Spawner.mem_limit = '2G'
+
 # Use IoT-LAB authenticator
 c.JupyterHub.authenticator_class = 'iotlabauthenticator.IotlabAuthenticator'
 
@@ -37,6 +41,9 @@ c.DockerSpawner.remove = True
 
 # Use jupyterlab by default
 c.Spawner.default_url = '/lab'
+
+# Directly jump in the training directory
+c.DockerSpawner.notebook_dir = '~/work/training'
 
 # Ensure the user containers are removed after 1h of inactivity
 c.JupyterHub.services = [

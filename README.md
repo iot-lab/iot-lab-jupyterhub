@@ -11,14 +11,9 @@
   mkdir -p /tmp/iotlab/users
   ```
 
-- Build the jupyterhub container (from the base directory of this repository):
+- Build the images for jupyterhub and jupyterlab:
   ```
-  docker build . -t aabadie/iot-lab-jupyterhub
-  ```
-
-- Build the docker image used for the Jupyterlab notebooks:
-  ```
-  docker build notebooks/. -t aabadie/iot-lab-jupyterlab
+  docker-compose build
   ```
 
 - Create a docker network:

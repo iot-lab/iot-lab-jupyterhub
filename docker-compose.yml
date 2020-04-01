@@ -1,11 +1,12 @@
 version: "3"
 
 services:
-  hub:
+  jupyterhub:
     user: "0:0"
     ports:
       - "8000:8000"
     restart: always
+    build: jupyterhub
     image: aabadie/iot-lab-jupyterhub
     container_name: jupyterhub
     networks:
@@ -25,6 +26,12 @@ services:
       - "${JUPYTERHUB_USERS_DIR}:/srv/jupyterhub/users"
     command: >
       jupyterhub -f /srv/jupyterhub/iotlab_config.py
+
+  jupyterlab:
+    build: jupyterlab
+    image: aabadie/iot-lab-jupyterlab
+    container_name: jupyterlab-none
+    command: echo
 
 networks:
   default:
