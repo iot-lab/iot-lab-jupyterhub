@@ -1,48 +1,66 @@
 import os
 
-c.JupyterHub.template_paths=['.']
+# Retrieve useful environment variables
+DOCKER_NETWORK_NAME = os.getenv('DOCKER_NETWORK_NAME', 'jupyterhub')
+JUPYTERHUB_USERS_DIR = os.getenv('JUPUTERHUB_USERS_DIR', '/tmp/iotlab/users/')
+JUPYTERLAB_USERNAME = os.getenv('JUPUTERLAB_USERNAME', 'jovyan')
+JUPYTERLAB_DOCKER_IMAGE = os.getenv('JUPYTERLAB_DOCKER_IMAGE',
+                                    'aabadie/iot-lab-training-notebooks')
+JUPYTERHUB_HUB_IP = os.getenv('JUPYTERHUB_HUB_IP', '0.0.0.0')
+
+# General configuration
+
+# hub listen ips
+c.JupyterHub.hub_ip = JUPYTERHUB_HUB_IP
+# hub hostname/ip
+c.JupyterHub.hub_connect_ip = 'jupyterhub'
+
+# Add path for IoT-LAB custom template
+c.JupyterHub.template_paths=['iotlab_template/.']
 
 # Use IoT-LAB authenticator
 c.JupyterHub.authenticator_class = 'iotlabauthenticator.IotlabAuthenticator'
 
-# launch with docker
+# Use Docker spawner
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 
-# we need the hub to listen on all ips when it is in a container
-c.JupyterHub.hub_ip = '0.0.0.0'
-# the hostname/ip that should be used to connect to the hub
-# this is usually the hub container's name
-c.JupyterHub.hub_connect_ip = 'jupyterhub'
 
-# pick a docker image. This should have the same version of jupyterhub
-# in it as our Hub.
-c.DockerSpawner.image = 'aabadie/iot-lab-training-notebooks'
+# Docker spawner configuration
+
+c.DockerSpawner.image = JUPYTERLAB_DOCKER_IMAGE
 
 # tell the user containers to connect to our docker network
-c.DockerSpawner.network_name = 'jupyterhub'
+c.DockerSpawner.network_name = DOCKER_NETWORK_NAME
 
-# delete containers when the stop
+# delete containers when they are stopped
 c.DockerSpawner.remove = True
 
-# Use jupyterlab
+# Use jupyterlab by default
 c.Spawner.default_url = '/lab'
 
-JUPYTERHUB_DOTSSH_PATH = '/tmp/iotlab/users/{}/.ssh'
-JUPYTERHUB_IOTLABRC_PATH = '/tmp/iotlab/users/{}/.iotlabrc'
+# Ensure the user containers are removed after 1h of inactivity
+c.JupyterHub.services = [
+    {
+        'name': 'cull_idle',
+        'admin': True,
+        'command': 'python3 /srv/jupyterhub/cull_idle_servers.py --timeout=3600'.split(),
+    },
+]
 
-
+# Customize the user container just before it starts
 def spawner_hook(spawner):
+    """Add some custom logic just before launching the user container"""
     username = spawner.user.name
-    iotlabrc_path = JUPYTERHUB_IOTLABRC_PATH.format(username)
-    dotssh_path = JUPYTERHUB_DOTSSH_PATH.format(username)
+    iotlabrc_path = os.path.join(JUPYTERHUB_USERS_DIR, username, '.iotlabrc')
+    dotssh_path = os.path.join(JUPYTERHUB_USERS_DIR, username, '.ssh')
 
     spawner.environment = {
         'IOTLAB_LOGIN': username
     }
 
     spawner.volumes = {
-        iotlabrc_path: '/home/jovyan/.iotlabrc',
-        dotssh_path: '/home/jovyan/.ssh'
+        iotlabrc_path: '/home/{}/.iotlabrc'.format(JUPYTERLAB_USERNAME),
+        dotssh_path: '/home/{}/.ssh'.format(JUPYTERLAB_USERNAME)
     }
 
 
