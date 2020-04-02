@@ -1,5 +1,4 @@
 import os
-import logging
 import subprocess
 import shlex
 from base64 import b64encode
@@ -21,7 +20,6 @@ def setup_account(username, password):
     user_path = USER_PATH.format(username)
 
     if not os.path.exists(user_path):
-        logging.info('Creating new user directory \'%s\'', user_path)
         os.makedirs(user_path)
 
     iotlabrc_path = os.path.join(user_path, '.iotlabrc')
@@ -39,11 +37,9 @@ def setup_account(username, password):
 
     id_rsa_path = os.path.join(ssh_path, 'id_rsa')
     if not os.path.exists(id_rsa_path):
-        logging.info('Creating SSH keys for user %s', username)
         cmd = shlex.split('ssh-keygen -t rsa -q -N "" -C jupyterhub@iotlab -f {}'
                           .format(os.path.join(id_rsa_path)))
-        ret = subprocess.call(cmd)
-        logging.info('Result: %d', ret)
+        subprocess.call(cmd)
         cmd = "chown -R 1000:100 {}".format(ssh_path)
         subprocess.call(shlex.split(cmd))
 
