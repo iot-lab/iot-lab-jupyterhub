@@ -54,22 +54,24 @@ c.JupyterHub.services = [
     },
 ]
 
+IOTLABRC_PATH = os.path.join(JUPYTERHUB_USERS_DIR, '{username}', '.iotlabrc')
+DOTSSH_PATH = os.path.join(JUPYTERHUB_USERS_DIR, '{username}', '.ssh')
+WORK_PATH = os.path.join(JUPYTERHUB_USERS_DIR, '{username}', 'work')
+
+c.DockerSpawner.volumes = {
+    IOTLABRC_PATH: '/home/{}/.iotlabrc'.format(JUPYTERLAB_USERNAME),
+    DOTSSH_PATH: '/home/{}/.ssh'.format(JUPYTERLAB_USERNAME),
+    WORK_PATH: '/home/{}/work'.format(JUPYTERLAB_USERNAME)
+}
+
+
 # Customize the user container just before it starts
 def spawner_hook(spawner):
     """Add some custom logic just before launching the user container"""
     username = spawner.user.name
-    iotlabrc_path = os.path.join(JUPYTERHUB_USERS_DIR, username, '.iotlabrc')
-    dotssh_path = os.path.join(JUPYTERHUB_USERS_DIR, username, '.ssh')
-    work_path = os.path.join(JUPYTERHUB_USERS_DIR, username, 'work')
 
     spawner.environment = {
         'IOTLAB_LOGIN': username
-    }
-
-    spawner.volumes = {
-        iotlabrc_path: '/home/{}/.iotlabrc'.format(JUPYTERLAB_USERNAME),
-        dotssh_path: '/home/{}/.ssh'.format(JUPYTERLAB_USERNAME),
-        work_path: '/home/{}/work'.format(JUPYTERLAB_USERNAME)
     }
 
 
