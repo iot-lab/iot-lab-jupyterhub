@@ -51,7 +51,8 @@ def setup_account(username, password):
     work_path = os.path.join(user_path, 'work')
     training_path = os.path.join(work_path, 'training')
     if not os.path.exists(training_path):
-        os.makedirs(work_path)
+        if not os.path.exists(work_path):
+            os.makedirs(work_path)
         cmd = "cp -R {} {}".format(training_default_path, training_path)
         subprocess.call(shlex.split(cmd))
         cmd = "chown -R 1000:100 {}".format(work_path)
