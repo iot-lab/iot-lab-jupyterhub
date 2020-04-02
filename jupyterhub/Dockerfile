@@ -2,6 +2,7 @@ FROM jupyterhub/jupyterhub:1.2
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    git \
     iproute2 \
     iputils-ping \
     openssh-client \
@@ -11,11 +12,11 @@ RUN apt-get update && \
 
 COPY requirements.txt /tmp/requirements.txt
 
-RUN python3 -m pip install --no-cache -r /tmp/requirements.txt
-RUN python3 -m pip install --no-cache iotlabcli==3.1.1
+RUN pip3 install --no-cache -r /tmp/requirements.txt
+RUN pip3 install -U --no-cache git+https://github.com/aabadie/cli-tools.git@ssh_key
 
 COPY iotlabauthenticator /src/iotlabauthenticator
-RUN python3 -m pip install --no-cache /src/iotlabauthenticator
+RUN pip3 install --no-cache /src/iotlabauthenticator
 
 COPY iotlab_config.py /srv/jupyterhub/iotlab_config.py
 RUN mkdir -p /srv/jupyterhub/iotlab_template

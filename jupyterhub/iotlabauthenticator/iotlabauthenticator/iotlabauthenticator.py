@@ -42,6 +42,10 @@ def setup_account(username, password):
         subprocess.call(cmd)
         cmd = "chown -R 1000:100 {}".format(ssh_path)
         subprocess.call(shlex.split(cmd))
+        os.environ.update({'IOTLAB_PASSWORD_FILE': iotlabrc_path})
+        cmd = "iotlab-auth --add-ssh-key --key-file {}.pub".format(id_rsa_path)
+        subprocess.call(shlex.split(cmd))
+
 
     training_default_path = os.path.join(USERS_PATH, '.training')
     work_path = os.path.join(user_path, 'work')
