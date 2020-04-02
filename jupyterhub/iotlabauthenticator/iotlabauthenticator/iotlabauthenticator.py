@@ -15,7 +15,6 @@ USERS_PATH = '/srv/jupyterhub/users'
 USER_PATH = os.path.join(USERS_PATH, '{}')
 
 
-@gen.coroutine
 def setup_account(username, password):
     user_path = USER_PATH.format(username)
 
