@@ -76,3 +76,6 @@ def spawner_hook(spawner):
 
 
 c.DockerSpawner.pre_spawn_hook = spawner_hook
+
+# Fix for GDB and RIOT native
+c.DockerSpawner.extra_host_config = {"cap_add": "SYS_PTRACE", "security_opt": ["seccomp=unconfined"]}
