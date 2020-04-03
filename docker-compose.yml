@@ -15,7 +15,6 @@ services:
           - ${DOCKER_NETWORK_NAME}
     environment:
       - DOCKER_NETWORK_NAME
-      - JUPYTERHUB_HUB_IP
       - JUPYTERHUB_USERS_DIR
       - JUPYTERLAB_DOCKER_IMAGE
       - JUPYTERLAB_USERNAME

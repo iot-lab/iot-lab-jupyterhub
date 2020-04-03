@@ -11,7 +11,7 @@ JUPYTERLAB_DOCKER_IMAGE = os.getenv('JUPYTERLAB_DOCKER_IMAGE',
 # General configuration
 
 # hub listen ips
-c.JupyterHub.hub_ip = JUPYTERHUB_HUB_IP
+c.JupyterHub.hub_ip = 'jupyterhub'
 # hub hostname/ip
 c.JupyterHub.hub_connect_ip = 'jupyterhub'
 
