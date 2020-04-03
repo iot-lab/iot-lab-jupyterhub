@@ -11,8 +11,7 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY requirements.txt /tmp/requirements.txt
-
-RUN pip3 install --no-cache -r /tmp/requirements.txt
+RUN pip3 install --no-cache -r /tmp/requirements.txt && rm -f /tmp/requirements.txt
 RUN pip3 install -U --no-cache git+https://github.com/aabadie/cli-tools.git@ssh_key
 
 COPY iotlabauthenticator /src/iotlabauthenticator
