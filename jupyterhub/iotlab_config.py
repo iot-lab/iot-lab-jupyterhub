@@ -45,6 +45,8 @@ c.Spawner.default_url = '/lab'
 # Directly jump in the training directory
 c.DockerSpawner.notebook_dir = '~/work/training'
 
+c.DockerSpawner.debug = True
+
 # Ensure the user containers are removed after 1h of inactivity
 c.JupyterHub.services = [
     {
