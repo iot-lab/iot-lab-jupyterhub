@@ -30,7 +30,10 @@ services:
       jupyterhub -f /srv/jupyterhub/iotlab_config.py
 
   jupyterlab:
-    build: jupyterlab
+    build:
+      context: jupyterlab
+      args:
+        JUPYTERHUB_VERSION: ${JUPYTERHUB_VERSION}
     image: aabadie/iot-lab-jupyterlab
     container_name: jupyterlab-none
     command: echo

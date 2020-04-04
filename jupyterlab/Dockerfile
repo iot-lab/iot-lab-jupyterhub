@@ -1,4 +1,5 @@
-FROM jupyterhub/singleuser
+ARG JUPYTERHUB_VERSION
+FROM jupyterhub/singleuser:${JUPYTERHUB_VERSION}
 
 LABEL maintainer="alexandre.abadie@inria.fr"
 
