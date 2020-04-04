@@ -14,10 +14,6 @@ RUN apt-get update && \
         git \
         g++-multilib \
         openssh-client \
-        python3-dev \
-        python3-pip \
-        python3-setuptools \
-        python3-wheel \
         unzip \
         wget \
         xxd \
@@ -35,15 +31,18 @@ RUN mkdir -p /opt && \
 ENV PATH ${PATH}:/opt/gcc-arm-none-eabi-7-2018-q2-update/bin
 
 # Python packages
-RUN pip3 install --no-cache \
-    notebook \
-    cbor \
-    ed25519 \
+RUN python3 -m pip install --no-cache \
+    aiocoap==0.3 \
+    cbor==1.0.0 \
+    ed25519==1.5 \
     iotlabcli==3.1.1 \
     iotlabwscli==0.2.0 \
-    jupyterlab==2.0.1
+    jupyterlab==2.0.1 \
+    matplotlib==3.2.1 \
+    numpy==1.18.2 \
+    paho-mqtt==1.5.0
 
-RUN pip3 install -U --no-cache git+https://github.com/aabadie/cli-tools.git@ssh_key
+RUN python3 -m pip install -U --no-cache git+https://github.com/aabadie/cli-tools.git@ssh_key
 
 ENV SHELL /bin/bash
 
