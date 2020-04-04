@@ -6,7 +6,10 @@ services:
     ports:
       - "8000:8000"
     restart: always
-    build: jupyterhub
+    build:
+      context: jupyterhub
+      args:
+        JUPYTERHUB_VERSION: ${JUPYTERHUB_VERSION}
     image: aabadie/iot-lab-jupyterhub
     container_name: jupyterhub
     networks:

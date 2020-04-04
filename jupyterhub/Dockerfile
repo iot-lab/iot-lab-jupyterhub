@@ -1,4 +1,5 @@
-FROM jupyterhub/jupyterhub:1.2
+ARG JUPYTERHUB_VERSION
+FROM jupyterhub/jupyterhub:${JUPYTERHUB_VERSION}
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
