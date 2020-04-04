@@ -22,8 +22,24 @@ services:
       # within the container
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
       - "${JUPYTERHUB_USERS_DIR}:/srv/jupyterhub/users"
+    labels: # Traefik configuration.
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:${JUPYTERHUB_HOSTNAME}"
     command: >
       jupyterhub -f /srv/jupyterhub/iotlab_config.py --log-level=${JUPYTERHUB_DEBUG_LEVEL}
+
+  reverse-proxy:
+    image: traefik:v1.7.16
+    container_name: jupyterhub-reverse-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${TRAEFIK_CONF_DIR}/traefik.toml:/etc/traefik/traefik.toml
+      - ${TRAEFIK_CERTS_DIR}:/etc/certs
+    restart: on-failure
 
   jupyterlab:
     build:
