@@ -27,7 +27,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:rw"
       - "${JUPYTERHUB_USERS_DIR}:/srv/jupyterhub/users"
     command: >
-      jupyterhub -f /srv/jupyterhub/iotlab_config.py
+      jupyterhub -f /srv/jupyterhub/iotlab_config.py --log-level=${JUPYTERHUB_DEBUG_LEVEL}
 
   jupyterlab:
     build:
