@@ -28,6 +28,9 @@ c.JupyterHub.authenticator_class = 'iotlabauthenticator.IotlabAuthenticator'
 # Use Docker spawner
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 
+# Authenticator configuration
+
+c.Authenticator.admin_users = {'abadie'}
 
 # Docker spawner configuration
 
