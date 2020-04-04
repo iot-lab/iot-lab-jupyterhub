@@ -12,12 +12,8 @@ services:
         JUPYTERHUB_VERSION: ${JUPYTERHUB_VERSION}
     image: aabadie/iot-lab-jupyterhub
     container_name: jupyterhub
-    networks:
-      default:
-        aliases:
-          - ${DOCKER_NETWORK_NAME}
     environment:
-      - DOCKER_NETWORK_NAME
+      - DOCKER_NETWORK_NAME=${COMPOSE_PROJECT_NAME}_default
       - JUPYTERHUB_USERS_DIR
       - JUPYTERLAB_DOCKER_IMAGE
       - JUPYTERLAB_USERNAME
@@ -37,8 +33,3 @@ services:
     image: aabadie/iot-lab-jupyterlab
     container_name: jupyterlab-none
     command: echo
-
-networks:
-  default:
-    external:
-      name: ${DOCKER_NETWORK_NAME}
