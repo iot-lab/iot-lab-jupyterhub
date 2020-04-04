@@ -10,6 +10,8 @@ JUPYTERLAB_DOCKER_IMAGE = os.getenv('JUPYTERLAB_DOCKER_IMAGE',
 
 # General configuration
 
+c.JupyterHub.admin_access = True
+
 # hub listen ips
 c.JupyterHub.hub_ip = 'jupyterhub'
 # hub hostname/ip
