@@ -13,8 +13,13 @@ RUN apt-get update && \
         curl \
         git \
         g++-multilib \
+        iproute2 \
+        mosquitto-clients \
+        net-tools \
         openssh-client \
+        socat \
         unzip \
+        vim \
         wget \
         xxd \
         && \
@@ -33,16 +38,31 @@ ENV PATH ${PATH}:/opt/gcc-arm-none-eabi-7-2018-q2-update/bin
 # Python packages
 RUN python3 -m pip install --no-cache \
     aiocoap==0.3 \
+    asynchttp==0.0.4 \
+    asyncssh==2.2.0 \
+    azure-iot-device==2.1.1 \
     cbor==1.0.0 \
     ed25519==1.5 \
     iotlabcli==3.1.1 \
     iotlabwscli==0.2.0 \
+    ipywidgets==7.5.1 \
     jupyterlab==2.0.1 \
     matplotlib==3.2.1 \
     numpy==1.18.2 \
-    paho-mqtt==1.5.0
+    paho-mqtt==1.5.0 \
+    pandas==1.0.3 \
+    pycayennelpp==1.3.0 \
+    python-cayennelpp==0.0.4 \
+    scapy==2.4.3 \
+    seaborn==0.10.0 \
+    scikit-learn==0.22.2 \
+    scipy==1.4.1
 
+# IoT-LAB CLI Tools
 RUN python3 -m pip install -U --no-cache git+https://github.com/aabadie/cli-tools.git@ssh_key
+
+# IoT-LAB Plot OML tools
+RUN python3 -m pip install -U --no-cache git+https://github.com/iot-lab/oml-plot-tools.git@0.7.0
 
 ENV SHELL /bin/bash
 
