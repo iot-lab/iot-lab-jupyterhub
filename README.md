@@ -16,11 +16,6 @@
   git clone --recurse-submodules https://github.com/iot-lab/iot-lab-training /tmp/iotlab/users/.training
   ```
 
-- Build the images for jupyterhub and jupyterlab:
-  ```
-  docker-compose build
-  ```
-
 - Launch Jupyterhub:
   ```
   docker-compose up
