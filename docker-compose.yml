@@ -9,7 +9,7 @@ services:
       context: jupyterhub
       args:
         JUPYTERHUB_VERSION: ${JUPYTERHUB_VERSION}
-    image: aabadie/iot-lab-jupyterhub
+    image: fitiotlab/iot-lab-jupyterhub
     container_name: jupyterhub
     environment:
       - DOCKER_NETWORK_NAME=${COMPOSE_PROJECT_NAME}_default
@@ -41,11 +41,18 @@ services:
       - ${TRAEFIK_CERTS_DIR}:/etc/certs
     restart: on-failure
 
+  jupyterlab-base:
+    build:
+      context: jupyterlab-base
+      args:
+        JUPYTERHUB_VERSION: ${JUPYTERHUB_VERSION}
+    image: fitiotlab/iot-lab-jupyterlab-base
+    container_name: jupyterlab-base-none
+    command: echo
+
   jupyterlab:
     build:
       context: jupyterlab
-      args:
-        JUPYTERHUB_VERSION: ${JUPYTERHUB_VERSION}
-    image: aabadie/iot-lab-jupyterlab
+    image: fitiotlab/iot-lab-jupyterlab
     container_name: jupyterlab-none
     command: echo
