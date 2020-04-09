@@ -66,6 +66,6 @@ RUN python3 -m pip install -U --no-cache git+https://github.com/iot-lab/oml-plot
 
 # Add Jupyterlab interactive extensions
 RUN conda install -c conda-forge nodejs
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
-RUN jupyter labextension install jupyter-matplotlib
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager --minimize=False
+RUN jupyter labextension install jupyter-matplotlib --minimize=False
 RUN jupyter nbextension enable --py widgetsnbextension
