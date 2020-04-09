@@ -1,4 +1,4 @@
-ARG JUPYTERHUB_VERSION
+ARG JUPYTERHUB_VERSION=1.2
 FROM jupyterhub/jupyterhub:${JUPYTERHUB_VERSION}
 
 RUN apt-get update && \
