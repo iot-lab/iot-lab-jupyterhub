@@ -6,14 +6,9 @@
 - Ensure docker-compose is installed. Read
   [the documentation](https://docs.docker.com/compose/install/) for help
 
-- Create a `/tmp/iotlab/users` directory:
+- Clone iot-lab-training in `/tmp`:
   ```
-  mkdir -p /tmp/iotlab/users
-  ```
-
-- Clone iot-lab-training in the `/tmp/iotlab/users` directory:
-  ```
-  git clone --recurse-submodules https://github.com/iot-lab/iot-lab-training /tmp/iotlab/users/.training
+  git clone --recurse-submodules https://github.com/iot-lab/iot-lab-training /tmp/iot-lab-training
   ```
 
 - Launch Jupyterhub:

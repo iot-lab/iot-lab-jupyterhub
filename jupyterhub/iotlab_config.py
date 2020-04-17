@@ -2,7 +2,7 @@ import os
 
 # Retrieve useful environment variables
 DOCKER_NETWORK_NAME = os.getenv('DOCKER_NETWORK_NAME', 'jupyterhub')
-JUPYTERHUB_USERS_DIR = os.getenv('JUPYTERHUB_USERS_DIR', '/tmp/users')
+JUPYTERHUB_TRAINING_DIR = os.getenv('JUPYTERHUB_TRAINING_DIR', '/tmp/iot-lab-training')
 JUPYTERHUB_HUB_IP = os.getenv('JUPYTERHUB_HUB_IP', '0.0.0.0')
 JUPYTERLAB_USERNAME = os.getenv('JUPUTERLAB_USERNAME', 'jovyan')
 JUPYTERLAB_DOCKER_IMAGE = os.getenv('JUPYTERLAB_DOCKER_IMAGE',
@@ -33,6 +33,7 @@ c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 # Authenticator configuration
 
 c.Authenticator.admin_users = {'abadie'}
+c.Authenticator.enable_auth_state = True
 
 # Docker spawner configuration
 
@@ -47,9 +48,6 @@ c.DockerSpawner.remove = True
 # Use jupyterlab by default
 c.Spawner.default_url = '/lab'
 
-# Directly jump in the training directory
-c.DockerSpawner.notebook_dir = '~/work/training'
-
 c.DockerSpawner.debug = True
 
 # Ensure the user containers are removed after 1h of inactivity
@@ -61,25 +59,32 @@ c.JupyterHub.services = [
     },
 ]
 
-IOTLABRC_PATH = os.path.join(JUPYTERHUB_USERS_DIR, '{username}', '.iotlabrc')
-DOTSSH_PATH = os.path.join(JUPYTERHUB_USERS_DIR, '{username}', '.ssh')
-WORK_PATH = os.path.join(JUPYTERHUB_USERS_DIR, '{username}', 'work')
+WORK_DIR =  '/home/{}/work'.format(JUPYTERLAB_USERNAME)
 
 c.DockerSpawner.volumes = {
-    IOTLABRC_PATH: '/home/{}/.iotlabrc'.format(JUPYTERLAB_USERNAME),
-    DOTSSH_PATH: '/home/{}/.ssh'.format(JUPYTERLAB_USERNAME),
-    WORK_PATH: '/home/{}/work'.format(JUPYTERLAB_USERNAME)
+    JUPYTERHUB_TRAINING_DIR: '/opt/training',
+    'jupyterhub-user-{username}': WORK_DIR,
 }
+
+
+def userdata_hook(spawner, auth_state):
+    spawner.userdata = auth_state["userdata"]
+
+
+c.Spawner.auth_state_hook = userdata_hook
 
 
 # Customize the user container just before it starts
 def spawner_hook(spawner):
     """Add some custom logic just before launching the user container"""
-    username = spawner.user.name
 
     spawner.environment = {
-        'IOTLAB_LOGIN': username
+        'IOTLAB_LOGIN': spawner.userdata['username'],
+        'IOTLAB_PASSWORD': spawner.userdata['password'],
     }
+
+    # Directly jump in the training directory
+    spawner.notebook_dir = '{}/training'.format(WORK_DIR)
 
 
 c.DockerSpawner.pre_spawn_hook = spawner_hook

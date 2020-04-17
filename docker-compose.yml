@@ -13,14 +13,14 @@ services:
     container_name: jupyterhub
     environment:
       - DOCKER_NETWORK_NAME=${COMPOSE_PROJECT_NAME}_default
-      - JUPYTERHUB_USERS_DIR
+      - JUPYTERHUB_TRAINING_DIR
+      - JUPYTERHUB_CRYPT_KEY
       - JUPYTERLAB_DOCKER_IMAGE
       - JUPYTERLAB_USERNAME
     volumes:
       # Bind Docker socket on the host so we can connect to the daemon from
       # within the container
       - /var/run/docker.sock:/var/run/docker.sock:rw
-      - ${JUPYTERHUB_USERS_DIR}:/srv/jupyterhub/users
     command: >
       jupyterhub -f /srv/jupyterhub/iotlab_config.py --log-level=${JUPYTERHUB_DEBUG_LEVEL}
     restart: on-failure
