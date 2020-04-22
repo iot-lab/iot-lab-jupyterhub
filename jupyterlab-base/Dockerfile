@@ -14,6 +14,7 @@ RUN apt-get update && \
         git \
         g++-multilib \
         iproute2 \
+        iputils-ping \
         mosquitto-clients \
         net-tools \
         openssh-client \
