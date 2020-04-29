@@ -9,8 +9,11 @@ class IotlabAuthenticator(Authenticator):
 
     @gen.coroutine
     def authenticate(self, handler, data):
-        _username = data['username']
+        _username = data['username'].strip()
         _password = data['password']
+        if '@' in _username:
+            # Prevent use of email as login
+            return None
         api = Api(_username, _password)
         try:
             if api.check_credential():
