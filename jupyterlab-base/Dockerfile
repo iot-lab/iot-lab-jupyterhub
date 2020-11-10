@@ -38,6 +38,16 @@ RUN mkdir -p /opt && \
 
 ENV PATH ${PATH}:/opt/gcc-arm-none-eabi-7-2018-q2-update/bin
 
+# Arm GCC 5 for contiki-ng
+ARG ARM_GCC_ARCHIVE='/opt/gcc-arm-none-eabi-5.tar.bz2'
+ARG ARM_GCC_URL='https://launchpad.net/gcc-arm-embedded/5.0/5-2015-q4-major/+download/gcc-arm-none-eabi-5_2-2015q4-20151219-linux.tar.bz2'
+RUN mkdir -p /opt && \
+    curl -L -o ${ARM_GCC_ARCHIVE} ${ARM_GCC_URL} && \
+    echo "f88caac80b4444a17344f57ccb760b90 *${ARM_GCC_ARCHIVE}" | md5sum -c && \
+    tar -C /opt -jxf ${ARM_GCC_ARCHIVE} && \
+    rm -f ${ARM_GCC_ARCHIVE} && \
+    rm -rf /opt/gcc-arm-none-eabi-*/share/doc
+
 # Python packages
 RUN python3 -m pip install --no-cache \
     aiocoap==0.3 \
