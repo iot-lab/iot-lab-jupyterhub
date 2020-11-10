@@ -80,3 +80,6 @@ RUN conda install -c conda-forge nodejs
 RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager --minimize=False
 RUN jupyter labextension install jupyter-matplotlib --minimize=False
 RUN jupyter nbextension enable --py widgetsnbextension
+
+# Don't show conda env in prompt by default
+RUN conda config --set changeps1 False
