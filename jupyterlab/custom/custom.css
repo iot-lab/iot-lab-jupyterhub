@@ -1,0 +1,18 @@
+body.in-inframe #menubar{
+    display: inline-block;
+    vertical-align: middle;
+    padding: 2px 0 3px 0;
+}
+
+body.in-inframe #menubar .navbar {
+    border-top: 1px solid #e7e7e7;
+    border-radius: 2px;
+}
+
+body.in-inframe #maintoolbar{
+    float: right;
+}
+
+body.in-inframe #maintoolbar-container{
+    width: auto;
+}

@@ -32,6 +32,13 @@ then
     else
         echo "Training directory already exists"
     fi
+
+    if [[ ${IOTLAB_LOGIN} == "fun_"* ]]
+    then
+        cp -R /opt/custom_jupyter /home/${NB_USER}/.jupyter/custom
+    else
+        echo "Regular IoT-LAB user"
+    fi
 fi
 
 # Run the command provided
