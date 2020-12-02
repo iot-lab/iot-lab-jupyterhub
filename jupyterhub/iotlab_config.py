@@ -22,7 +22,7 @@ c.JupyterHub.template_paths=['iotlab_template/.']
 
 # Set some limit
 c.Spawner.cpu_limit = 1
-c.Spawner.mem_limit = '2G'
+c.Spawner.mem_limit = '1G'
 
 # Use IoT-LAB authenticator
 c.JupyterHub.authenticator_class = 'iotlabauthenticator.IotlabAuthenticator'
