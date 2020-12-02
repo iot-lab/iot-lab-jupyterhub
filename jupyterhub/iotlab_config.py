@@ -1,4 +1,5 @@
 import os
+import sys
 
 # Retrieve useful environment variables
 DOCKER_NETWORK_NAME = os.getenv('DOCKER_NETWORK_NAME', 'jupyterhub')
@@ -58,6 +59,14 @@ c.JupyterHub.services = [
         'admin': True,
         'command': 'python3 /srv/jupyterhub/cull_idle_servers.py --timeout=3600'.split(),
     },
+    {
+        'name': 'password',
+        'url': 'http://127.0.0.1:10101',
+        'command': [sys.executable, '/srv/jupyterhub/services/password/password.py'],
+        'environment': {
+            'JUPYTERHUB_CRYPT_KEY': os.environ['JUPYTERHUB_CRYPT_KEY']
+        }
+    }
 ]
 
 WORK_DIR =  '/home/{}/work'.format(JUPYTERLAB_USERNAME)
