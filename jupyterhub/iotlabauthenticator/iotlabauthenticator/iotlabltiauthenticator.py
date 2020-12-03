@@ -49,7 +49,7 @@ class IoTLABLTIConnector:
     def get_iot_user_name(username):
         return "fun{}".format(re.sub('[^A-Za-z0-9]+', '', username)[:10])
 
-    def authenticate(self, handler, consumers=None, data=None):
+    def authenticate(self, handler, data=None, consumers=None):
         validator = LTILaunchValidator(consumers)
 
         args = {}
@@ -81,6 +81,7 @@ class IoTLABLTIConnector:
                     k: v for k, v in args.items() if not k.startswith('oauth_')
                 }
             }
+        return None
 
     def after_authenticate(self, username):
         # Create iot lab user in case not exists
@@ -131,7 +132,7 @@ class IoTLABRestConnector:
     def __init__(self, log):
         self.log = log
 
-    def authenticate(self, handler, consumers=None, data=None):
+    def authenticate(self, handler, data=None, consumers=None):
         _username = data['username'].strip()
         _password = data['password']
         if '@' in _username:
@@ -160,9 +161,13 @@ class IotlabLTIAuthenticator(LTIAuthenticator):
 
     @gen.coroutine
     def authenticate(self, handler, data):
-        if handler.request.uri == "/lti/launch":
+        ret = None
+        if handler.request.uri == "/hub/lti/launch":
             connector = IoTLABLTIConnector(self.log)
-            return connector.authenticate(handler, self.consumers, data)
+            ret = connector.authenticate(handler, data, self.consumers)
 
-        connector = IoTLABRestConnector(self.log)
-        return connector.authenticate(handler, self.consumers, data)
+        if ret is None:
+            connector = IoTLABRestConnector(self.log)
+            return connector.authenticate(handler, data)
+
+        return ret
