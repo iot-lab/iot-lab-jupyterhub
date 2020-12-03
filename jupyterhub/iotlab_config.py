@@ -31,7 +31,7 @@ c.Spawner.mem_limit = '1G'
 # Use IoT-LAB authenticator
 #c.JupyterHub.authenticator_class = 'iotlabauthenticator.IotlabAuthenticator'
 # Authenticate users with LTI
-c.JupyterHub.authenticator_class = iotlabauthenticator.IotlabLTIAuthenticator
+c.JupyterHub.authenticator_class = 'iotlabauthenticator.IotlabLTIAuthenticator'
 c.LTIAuthenticator.consumers = { LTI_KEY:LTI_SECRET }
 
 # Use Docker spawner
