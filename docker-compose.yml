@@ -18,6 +18,10 @@ services:
       - JUPYTERLAB_DOCKER_IMAGE
       - JUPYTERLAB_USERNAME
       - IOTLAB_API_URL
+      - IOTLAB_ADMIN_USER
+      - IOTLAB_ADMIN_PASSWORD
+      - LTI_KEY
+      - LTI_SECRET
     volumes:
       # Bind Docker socket on the host so we can connect to the daemon from
       # within the container
