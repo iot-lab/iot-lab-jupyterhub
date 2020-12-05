@@ -3,6 +3,7 @@ import hashlib
 import re
 import requests
 
+from traitlets import Dict, List
 from requests.auth import HTTPBasicAuth
 
 from jupyterhub.auth import Authenticator
@@ -13,11 +14,15 @@ from tornado.web import MissingArgumentError
 from ltiauthenticator import LTIAuthenticator, LTILaunchValidator
 from iotlabcli.rest import Api
 
+from iotlabauthenticator.iotlabauthenticator import IoTLABAuthenticator
+
 
 JUPYTERHUB_CRYPT_KEY = os.getenv("JUPYTERHUB_CRYPT_KEY", "")
 IOTLAB_ADMIN_USER = os.getenv("IOTLAB_ADMIN_USER", "")
 IOTLAB_ADMIN_PASSWORD = os.getenv("IOTLAB_ADMIN_PASSWORD", "")
 IOTLAB_API_URL = os.getenv("IOTLAB_API_URL", "")
+LTI_KEY = os.getenv("LTI_KEY", "")
+LTI_SECRET = os.getenv("LTI_SECRET", "")
 PASSWORD_REGEXP = (
     r"^(?=.*[A-Z])"
     r"(?=.*[!@#$%^&*_=+-/])"
@@ -26,10 +31,7 @@ PASSWORD_REGEXP = (
 )
 
 
-class IoTLABLTIConnector:
-
-    def __init__(self, log):
-        self.log = log
+class IoTLABLTIAuthenticator(LTIAuthenticator):
 
     @staticmethod
     def get_iot_user_password(username):
@@ -49,6 +51,7 @@ class IoTLABLTIConnector:
     def get_iot_user_name(username):
         return "fun{}".format(re.sub('[^A-Za-z0-9]+', '', username)[:10])
 
+    @gen.coroutine
     def authenticate(self, handler, data=None, consumers=None):
         validator = LTILaunchValidator(consumers)
 
@@ -85,8 +88,8 @@ class IoTLABLTIConnector:
 
     def after_authenticate(self, username):
         # Create iot lab user in case not exists
-        iot_username = IoTLABLTIConnector.get_iot_user_name(username)
-        iot_password = IoTLABLTIConnector.get_iot_user_password(username)
+        iot_username = IoTLABLTIAuthenticator.get_iot_user_name(username)
+        iot_password = IoTLABLTIAuthenticator.get_iot_user_password(username)
 
         self.log.warning('Check if user %s exists' % iot_username)
 
@@ -126,48 +129,51 @@ class IoTLABLTIConnector:
             self.log.error(err)
 
 
+class PackedAuthenticators(Authenticator):
+    authenticators = [
+        (
+            IoTLABAuthenticator, '/',
+            {'enable_auth_state': True, 'admin_users': {'abadie'}}
+        ),
+        (
+            IoTLABLTIAuthenticator, '/mooc',
+            {'consumers': { LTI_KEY:LTI_SECRET }}
+        )
+    ]
 
-class IoTLABRestConnector:
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, **kwargs)
+        self._authenticators = []
+        for authenticator_klass, url_scope, configs in self.authenticators:
+            self._authenticators.append({
+                'instance': authenticator_klass(**configs),
+                'url_scope':  url_scope
+            })
 
-    def __init__(self, log):
-        self.log = log
+    async def authenticate(self, handler, data):
+        """Using the url of the request to decide which authenticator
+        is responsible for this task.
+        """
+        return self._get_responsible_authenticator(handler).authenticate(handler, data)
 
-    def authenticate(self, handler, data=None, consumers=None):
-        _username = data['username'].strip()
-        _password = data['password']
-        if '@' in _username:
-            # Prevent use of email as login
-            self.log.warning('Invalid username %s' % _username)
-            return None
-        api = Api(_username, _password)
-        try:
-            if api.check_credential():
-                ret = {
-                    'name': _username,
-                    'auth_state': {
-                        'userdata': {
-                            'username': _username,
-                            'password': _password,
-                        }
-                    }
-                }
-                return ret
-        except:
-            pass
-        return None
+    def get_callback_url(self, handler):
+        return self._get_responsible_authenticator(handler).get_callback_url()
 
+    def _get_responsible_authenticator(self, handler):
+        responsible_authenticator = None
+        for authenticator in self._authenticators:
+            if handler.request.path.find(authenticator['url_scope']) != -1:
+                responsible_authenticator = authenticator
+                break
+        return responsible_authenticator['instance']
 
-class IotlabLTIAuthenticator(LTIAuthenticator):
-
-    @gen.coroutine
-    def authenticate(self, handler, data):
-        ret = None
-        if handler.request.uri == "/hub/lti/launch":
-            connector = IoTLABLTIConnector(self.log)
-            ret = connector.authenticate(handler, data, self.consumers)
-
-        if ret is None:
-            connector = IoTLABRestConnector(self.log)
-            return connector.authenticate(handler, data)
-
-        return ret
+    def get_handlers(self, app):
+        routes = []
+        for authenticator in self._authenticators:
+            handlers = authenticator['instance'].get_handlers(app)
+            handlers = list(map(lambda route: (f'{authenticator["url_scope"]}{route[0]}', route[1]), handlers))
+            for path, handler in handlers:
+                setattr(handler, 'authenticator', authenticator['instance'])
+            routes.extend(handlers)
+        self.log.error("Routes %s" % routes)
+        return routes

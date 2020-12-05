@@ -5,7 +5,7 @@ from tornado import gen
 from iotlabcli.rest import Api
 
 
-class IotlabAuthenticator(Authenticator):
+class IoTLABAuthenticator(Authenticator):
 
     @gen.coroutine
     def authenticate(self, handler, data):

@@ -9,8 +9,6 @@ JUPYTERLAB_USERNAME = os.getenv('JUPUTERLAB_USERNAME', 'jovyan')
 JUPYTERLAB_DOCKER_IMAGE = os.getenv('JUPYTERLAB_DOCKER_IMAGE',
                                     'aabadie/iot-lab-training-notebooks')
 IOTLAB_API_URL = os.getenv('IOTLAB_API_URL', 'https://www.iot-lab.info/api/')
-LTI_KEY = os.getenv("LTI_KEY", "")
-LTI_SECRET = os.getenv("LTI_SECRET", "")
 
 # General configuration
 
@@ -30,17 +28,15 @@ c.Spawner.mem_limit = '1G'
 
 # Use IoT-LAB authenticator
 #c.JupyterHub.authenticator_class = 'iotlabauthenticator.IotlabAuthenticator'
-# Authenticate users with LTI
-c.JupyterHub.authenticator_class = 'iotlabauthenticator.IotlabLTIAuthenticator'
-c.LTIAuthenticator.consumers = { LTI_KEY:LTI_SECRET }
+c.JupyterHub.authenticator_class = 'iotlabauthenticator.PackedAuthenticators'
 
 # Use Docker spawner
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 
 # Authenticator configuration
 
-c.Authenticator.admin_users = {'abadie'}
-c.Authenticator.enable_auth_state = True
+# c.Authenticator.admin_users = {'abadie'}
+# c.Authenticator.enable_auth_state = True
 
 # Docker spawner configuration
 
