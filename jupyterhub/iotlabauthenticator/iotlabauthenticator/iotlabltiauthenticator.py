@@ -133,11 +133,17 @@ class PackedAuthenticators(Authenticator):
     authenticators = [
         (
             IoTLABAuthenticator, '/',
-            {'enable_auth_state': True, 'admin_users': {'abadie'}}
+            {
+                'enable_auth_state': True,
+                'admin_users': {'abadie'}
+            }
         ),
         (
             IoTLABLTIAuthenticator, '/mooc',
-            {'consumers': { LTI_KEY:LTI_SECRET }}
+            {
+                'enable_auth_state': True,
+                'consumers': { LTI_KEY:LTI_SECRET }
+            }
         )
     ]
 
