@@ -3,16 +3,13 @@ import hashlib
 import re
 import requests
 
-from traitlets import Dict, List
 from requests.auth import HTTPBasicAuth
 
 from jupyterhub.auth import Authenticator
 
-from tornado import gen
 from tornado.web import MissingArgumentError
 
 from ltiauthenticator import LTIAuthenticator, LTILaunchValidator
-from iotlabcli.rest import Api
 
 from iotlabauthenticator.iotlabauthenticator import IoTLABAuthenticator
 
