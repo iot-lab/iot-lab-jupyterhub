@@ -90,6 +90,7 @@ def spawner_hook(spawner):
     """Add some custom logic just before launching the user container"""
 
     spawner.environment = {
+        'AUTHENTICATOR': spawner.userdata['authenticator'],
         'IOTLAB_LOGIN': spawner.userdata['username'],
         'IOTLAB_PASSWORD': spawner.userdata['password'],
         'IOTLAB_API_URL': IOTLAB_API_URL,

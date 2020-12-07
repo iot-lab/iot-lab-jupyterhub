@@ -20,6 +20,7 @@ class IoTLABAuthenticator(Authenticator):
                     'name': _username,
                     'auth_state': {
                         'userdata': {
+                            'authenticator': 'iotlab',
                             'username': _username,
                             'password': _password,
                         }
