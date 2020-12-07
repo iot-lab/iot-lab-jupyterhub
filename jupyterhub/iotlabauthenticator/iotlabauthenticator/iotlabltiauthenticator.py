@@ -76,7 +76,15 @@ class IoTLABLTIAuthenticator(LTIAuthenticator):
                 fun_username = handler.get_body_argument('lis_person_sourcedid')
             except MissingArgumentError:
                 fun_username = handler.get_body_argument('user_id')
-            self.after_authenticate(fun_username)
+            username, password = self.after_authenticate(fun_username)
+            args.update(
+                {
+                    'userdata': {
+                        'username': username,
+                        'password': password,
+                    }
+                }
+            )
             return {
                 'name': handler.get_body_argument('user_id'),
                 'auth_state': {
@@ -101,6 +109,7 @@ class IoTLABLTIAuthenticator(LTIAuthenticator):
             self.log.warning('User %s exists' % iot_username)
         except requests.exceptions.RequestException as err:
             self.create_iotlab_user(iot_username, iot_password)
+        return iot_username, iot_password
 
     def create_iotlab_user(self, iot_username, iot_password):
         self.log.warning('Creating user %s' % iot_username)
