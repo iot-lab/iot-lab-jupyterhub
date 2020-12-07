@@ -23,7 +23,7 @@ then
     ln -sf /home/${NB_USER}/work/.ssh /home/${NB_USER}/.ssh
     iotlab-auth -u ${IOTLAB_LOGIN} -p ${IOTLAB_PASSWORD} --add-ssh-key
     for site in ${SITES}; do
-        scp -o "ConnectTimeout 3" -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" /home/${NB_USER}/.iotlabrc ${IOTLAB_LOGIN}@${SITE}.iot-lab.info:.iotlabrc || echo "Error connecting to ${site}";
+        scp -o "ConnectTimeout 3" -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" /home/${NB_USER}/.iotlabrc ${IOTLAB_LOGIN}@${site}.iot-lab.info:.iotlabrc || echo "Error connecting to ${site}";
     done
 
     if [ ! -d /home/${NB_USER}/work/training ]
