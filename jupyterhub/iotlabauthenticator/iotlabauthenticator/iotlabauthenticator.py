@@ -7,8 +7,7 @@ from iotlabcli.rest import Api
 
 class IoTLABAuthenticator(Authenticator):
 
-    @gen.coroutine
-    def authenticate(self, handler, data):
+    async def authenticate(self, handler, data):
         _username = data['username'].strip()
         _password = data['password']
         if '@' in _username:

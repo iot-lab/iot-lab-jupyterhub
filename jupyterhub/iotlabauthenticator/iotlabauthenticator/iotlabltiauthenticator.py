@@ -51,9 +51,8 @@ class IoTLABLTIAuthenticator(LTIAuthenticator):
     def get_iot_user_name(username):
         return "fun{}".format(re.sub('[^A-Za-z0-9]+', '', username)[:10])
 
-    @gen.coroutine
-    def authenticate(self, handler, data=None, consumers=None):
-        validator = LTILaunchValidator(consumers)
+    async def authenticate(self, handler, data):
+        validator = LTILaunchValidator(self.consumers)
 
         args = {}
         for key, values in handler.request.body_arguments.items():
@@ -81,7 +80,8 @@ class IoTLABLTIAuthenticator(LTIAuthenticator):
             return {
                 'name': handler.get_body_argument('user_id'),
                 'auth_state': {
-                    k: v for k, v in args.items() if not k.startswith('oauth_')
+                    key: value for key, value in args.items()
+                    if not key.startswith('oauth_')
                 }
             }
         return None
@@ -154,7 +154,9 @@ class PackedAuthenticators(Authenticator):
         """Using the url of the request to decide which authenticator
         is responsible for this task.
         """
-        return self._get_responsible_authenticator(handler).authenticate(handler, data)
+        return self._get_responsible_authenticator(handler).authenticate(
+            handler, data
+        )
 
     def get_callback_url(self, handler):
         return self._get_responsible_authenticator(handler).get_callback_url()
@@ -171,8 +173,14 @@ class PackedAuthenticators(Authenticator):
         routes = []
         for authenticator in self._authenticators:
             handlers = authenticator['instance'].get_handlers(app)
-            handlers = list(map(lambda route: (f'{authenticator["url_scope"]}{route[0]}', route[1]), handlers))
-            for path, handler in handlers:
+            handlers = list(
+                map(
+                    lambda route: (
+                        f'{authenticator["url_scope"]}{route[0]}', route[1]
+                    ), handlers
+                )
+            )
+            for _, handler in handlers:
                 setattr(handler, 'authenticator', authenticator['instance'])
             routes.extend(handlers)
         self.log.error("Routes %s" % routes)
