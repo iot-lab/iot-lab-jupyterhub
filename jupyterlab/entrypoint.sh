@@ -2,11 +2,7 @@
 
 set -e
 
-SITES="lille lyon grenoble saclay strasbourg"
-if [[ ${IOTLAB_API_URL} == "https://devwww.iot-lab.info/api/" ]]
-then
-    SITES="devgrenoble devsaclay"
-fi
+: ${IOTLAB_SITES:=grenoble,lille,saclay,strasbourg}
 
 # If the run command is the default, do some initialization first
 if [ "$(which "$1")" = "/usr/local/bin/start-singleuser.sh" ]
@@ -26,13 +22,15 @@ then
     fi
     ln -sf /home/${NB_USER}/work/.ssh /home/${NB_USER}/.ssh
     iotlab-auth -u ${IOTLAB_LOGIN} -p ${IOTLAB_PASSWORD} --add-ssh-key
-    for site in ${SITES}
+    echo "Configure IoT-LAB access on $(echo ${IOTLAB_SITES} | sed -e s'/,/, /g') sites"
+    for site in $(echo ${IOTLAB_SITES} | tr , ' ')
     do
-        scp -o "ConnectTimeout 3" -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" /home/${NB_USER}/.iotlabrc ${IOTLAB_LOGIN}@${site}.iot-lab.info:.iotlabrc || echo "Error connecting to ${site}";
+        scp -o "ConnectTimeout 3" -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" /home/${NB_USER}/.iotlabrc ${IOTLAB_LOGIN}@${site}.iot-lab.info:.iotlabrc || echo "Cannot connect to ${site}";
     done
 
     if [ ! -d /home/${NB_USER}/work/training ]
     then
+        echo "Bootstraping training directory for user '${IOTLAB_LOGIN}'"
         cp -R /opt/training /home/${NB_USER}/work/training
     else
         echo "Training directory already exists"
@@ -47,5 +45,6 @@ then
     fi
 fi
 
+echo "All done, starting jupyterlab..."
 # Run the command provided
 exec "$@"
