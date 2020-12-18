@@ -5,13 +5,10 @@ import requests
 
 from requests.auth import HTTPBasicAuth
 
-from jupyterhub.auth import Authenticator
-
 from tornado.web import MissingArgumentError
 
+from jupyterhub.auth import Authenticator
 from ltiauthenticator import LTIAuthenticator, LTILaunchValidator
-
-from iotlabauthenticator.iotlabauthenticator import IoTLABAuthenticator
 
 
 JUPYTERHUB_CRYPT_KEY = os.getenv("JUPYTERHUB_CRYPT_KEY", "")
@@ -29,6 +26,8 @@ PASSWORD_REGEXP = (
 
 
 class IoTLABLTIAuthenticator(LTIAuthenticator):
+
+    consumers = {LTI_KEY:LTI_SECRET}
 
     @staticmethod
     def get_iot_user_password(username):
@@ -77,7 +76,6 @@ class IoTLABLTIAuthenticator(LTIAuthenticator):
             args.update(
                 {
                     'userdata': {
-                        'authenticator': 'mooc',
                         'username': username,
                         'password': password,
                     }
@@ -134,67 +132,3 @@ class IoTLABLTIAuthenticator(LTIAuthenticator):
         except requests.exceptions.RequestException as err:
             self.log.error('Error creating user %s' % iot_username)
             self.log.error(err)
-
-
-class PackedAuthenticators(Authenticator):
-    authenticators = [
-        (
-            IoTLABAuthenticator, '/',
-            {
-                'enable_auth_state': True,
-                'admin_users': {'abadie'}
-            }
-        ),
-        (
-            IoTLABLTIAuthenticator, '/mooc',
-            {
-                'enable_auth_state': True,
-                'consumers': { LTI_KEY:LTI_SECRET }
-            }
-        )
-    ]
-
-    def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, **kwargs)
-        self._authenticators = []
-        for authenticator_klass, url_scope, configs in self.authenticators:
-            self._authenticators.append({
-                'instance': authenticator_klass(**configs),
-                'url_scope':  url_scope
-            })
-
-    async def authenticate(self, handler, data):
-        """Using the url of the request to decide which authenticator
-        is responsible for this task.
-        """
-        return self._get_responsible_authenticator(handler).authenticate(
-            handler, data
-        )
-
-    def get_callback_url(self, handler):
-        return self._get_responsible_authenticator(handler).get_callback_url()
-
-    def _get_responsible_authenticator(self, handler):
-        responsible_authenticator = None
-        for authenticator in self._authenticators:
-            if handler.request.path.find(authenticator['url_scope']) != -1:
-                responsible_authenticator = authenticator
-                break
-        return responsible_authenticator['instance']
-
-    def get_handlers(self, app):
-        routes = []
-        for authenticator in self._authenticators:
-            handlers = authenticator['instance'].get_handlers(app)
-            handlers = list(
-                map(
-                    lambda route: (
-                        f'{authenticator["url_scope"]}{route[0]}', route[1]
-                    ), handlers
-                )
-            )
-            for _, handler in handlers:
-                setattr(handler, 'authenticator', authenticator['instance'])
-            routes.extend(handlers)
-        self.log.error("Routes %s" % routes)
-        return routes

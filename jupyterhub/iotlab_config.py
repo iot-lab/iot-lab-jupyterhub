@@ -3,6 +3,7 @@ import sys
 
 # Retrieve useful environment variables
 DOCKER_NETWORK_NAME = os.getenv('DOCKER_NETWORK_NAME', 'jupyterhub')
+JUPYTERHUB_INSTANCE = os.getenv('JUPYTERHUB_INSTANCE', 'iotlab')
 JUPYTERHUB_TRAINING_DIR = os.getenv('JUPYTERHUB_TRAINING_DIR', '/tmp/iot-lab-training')
 JUPYTERHUB_HUB_IP = os.getenv('JUPYTERHUB_HUB_IP', '0.0.0.0')
 JUPYTERLAB_USERNAME = os.getenv('JUPUTERLAB_USERNAME', 'jovyan')
@@ -27,16 +28,16 @@ c.Spawner.cpu_limit = 1
 c.Spawner.mem_limit = '1G'
 
 # Use IoT-LAB authenticator
-#c.JupyterHub.authenticator_class = 'iotlabauthenticator.IotlabAuthenticator'
-c.JupyterHub.authenticator_class = 'iotlabauthenticator.PackedAuthenticators'
+if JUPYTERHUB_INSTANCE == 'mooc':
+    c.JupyterHub.authenticator_class = 'iotlabauthenticator.IoTLABLTIAuthenticator'
+else:
+    c.JupyterHub.authenticator_class = 'iotlabauthenticator.IoTLABAuthenticator'
+    c.Authenticator.admin_users = {'abadie'}
+
+c.Authenticator.enable_auth_state = True
 
 # Use Docker spawner
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
-
-# Authenticator configuration
-
-# c.Authenticator.admin_users = {'abadie'}
-# c.Authenticator.enable_auth_state = True
 
 # Docker spawner configuration
 
