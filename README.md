@@ -13,7 +13,7 @@
 
 - Launch Jupyterhub:
   ```
-  docker-compose up
+  docker-compose up jupyterhub-iotlab
   ```
 
 - Open http://localhost:8000 in a web browser

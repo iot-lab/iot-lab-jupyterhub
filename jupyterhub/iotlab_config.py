@@ -16,9 +16,9 @@ IOTLAB_API_URL = os.getenv('IOTLAB_API_URL', 'https://www.iot-lab.info/api/')
 c.JupyterHub.admin_access = True
 
 # hub listen ips
-c.JupyterHub.hub_ip = 'jupyterhub'
+c.JupyterHub.hub_ip = 'jupyterhub-{}'.format(JUPYTERHUB_INSTANCE)
 # hub hostname/ip
-c.JupyterHub.hub_connect_ip = 'jupyterhub'
+c.JupyterHub.hub_connect_ip = 'jupyterhub-{}'.format(JUPYTERHUB_INSTANCE)
 
 # Add path for IoT-LAB custom template
 c.JupyterHub.template_paths=['iotlab_template/.']
