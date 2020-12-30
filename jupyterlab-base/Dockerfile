@@ -55,6 +55,8 @@ RUN python3 -m pip install --no-cache \
     asyncssh==2.2.0 \
     azure-iot-device==2.1.1 \
     cbor==1.0.0 \
+    cbor2==5.2.0 \
+    cryptography==3.3.1 \
     ed25519==1.5 \
     iotlabcli==3.2.0 \
     iotlabwscli==0.2.0 \
