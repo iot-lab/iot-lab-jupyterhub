@@ -78,6 +78,7 @@ class IoTLABLTIAuthenticator(LTIAuthenticator):
             args.update(
                 {
                     'userdata': {
+                        'authenticator': 'mooc',
                         'username': username,
                         'password': password,
                     }
