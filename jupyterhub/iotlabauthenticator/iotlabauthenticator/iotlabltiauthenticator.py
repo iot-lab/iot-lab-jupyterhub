@@ -15,6 +15,8 @@ JUPYTERHUB_CRYPT_KEY = os.getenv("JUPYTERHUB_CRYPT_KEY", "")
 IOTLAB_ADMIN_USER = os.getenv("IOTLAB_ADMIN_USER", "")
 IOTLAB_ADMIN_PASSWORD = os.getenv("IOTLAB_ADMIN_PASSWORD", "")
 IOTLAB_API_URL = os.getenv("IOTLAB_API_URL", "")
+if IOTLAB_API_URL == "":
+    IOTLAB_API_URL = "https://www.iot-lab.info/api/"
 LTI_KEY = os.getenv("LTI_KEY", "")
 LTI_SECRET = os.getenv("LTI_SECRET", "")
 PASSWORD_REGEXP = (
