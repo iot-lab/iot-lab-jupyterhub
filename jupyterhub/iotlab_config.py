@@ -74,9 +74,13 @@ c.JupyterHub.services = [
 
 WORK_DIR =  '/home/{}/work'.format(JUPYTERLAB_USERNAME)
 
+volume_name_template = 'jupyterhub-user-{username}'
+if JUPYTERHUB_INSTANCE == 'mooc':
+    volume_name_template = 'jupyterhub-user-mooc-{username}'
+
 c.DockerSpawner.volumes = {
     JUPYTERHUB_TRAINING_DIR: '/opt/training',
-    'jupyterhub-user-{username}': WORK_DIR,
+    volume_name_template: WORK_DIR,
 }
 
 
