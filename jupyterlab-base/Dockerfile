@@ -26,17 +26,19 @@ RUN apt-get update && \
         && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Toolchain
-ARG ARM_GCC_ARCHIVE='/opt/gcc-arm-none-eabi.tar.bz2'
-ARG ARM_GCC_URL='https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-linux.tar.bz2?revision=bc2c96c0-14b5-4bb4-9f18-bceb4050fee7?product=GNU%20Arm%20Embedded%20Toolchain,64-bit,,Linux,7-2018-q2-update'
+# ARM Toolchain
+ARG ARM_URLBASE=https://developer.arm.com/-/media/Files/downloads/gnu-rm
+ARG ARM_URL=${ARM_URLBASE}/9-2019q4/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
+ARG ARM_MD5=fe0029de4f4ec43cf7008944e34ff8cc
+ARG ARM_FOLDER=gcc-arm-none-eabi-9-2019-q4-major
 RUN mkdir -p /opt && \
-    curl -L -o ${ARM_GCC_ARCHIVE} ${ARM_GCC_URL} && \
-    echo "299ebd3f1c2c90930d28ab82e5d8d6c0 *${ARM_GCC_ARCHIVE}" | md5sum -c && \
-    tar -C /opt -jxf ${ARM_GCC_ARCHIVE} && \
-    rm -f ${ARM_GCC_ARCHIVE} && \
+    curl -L -o /opt/gcc-arm-none-eabi.tar.bz2 ${ARM_URL} && \
+    echo "${ARM_MD5} /opt/gcc-arm-none-eabi.tar.bz2" | md5sum -c && \
+    tar -C /opt -jxf /opt/gcc-arm-none-eabi.tar.bz2 && \
+    rm -f /opt/gcc-arm-none-eabi.tar.bz2 && \
     rm -rf /opt/gcc-arm-none-eabi-*/share/doc
 
-ENV PATH ${PATH}:/opt/gcc-arm-none-eabi-7-2018-q2-update/bin
+ENV PATH ${PATH}:/opt/${ARM_FOLDER}/bin
 
 # Arm GCC 5 for contiki-ng
 ARG ARM_GCC_ARCHIVE='/opt/gcc-arm-none-eabi-5.tar.bz2'
