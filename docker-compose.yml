@@ -7,8 +7,6 @@ services:
       - 8000:8000
     build:
       context: jupyterhub
-      args:
-        JUPYTERHUB_VERSION: ${JUPYTERHUB_VERSION}
     image: fitiotlab/iot-lab-jupyterhub
     container_name: jupyterhub-iotlab
     environment:
@@ -37,8 +35,6 @@ services:
       - 8800:8000
     build:
       context: jupyterhub
-      args:
-        JUPYTERHUB_VERSION: ${JUPYTERHUB_VERSION}
     image: fitiotlab/iot-lab-jupyterhub
     container_name: jupyterhub-mooc
     environment:
@@ -68,8 +64,6 @@ services:
   jupyterlab-base:
     build:
       context: jupyterlab-base
-      args:
-        JUPYTERHUB_VERSION: ${JUPYTERHUB_VERSION}
     image: fitiotlab/iot-lab-jupyterlab-base
     container_name: jupyterlab-base-none
     command: echo
