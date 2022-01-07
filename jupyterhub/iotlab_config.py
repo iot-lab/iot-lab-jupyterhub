@@ -24,10 +24,6 @@ c.JupyterHub.hub_connect_ip = 'jupyterhub-{}'.format(JUPYTERHUB_INSTANCE)
 # Add path for IoT-LAB custom template
 c.JupyterHub.template_paths=['iotlab_template/.']
 
-# Set some limit
-c.Spawner.cpu_limit = 1
-c.Spawner.mem_limit = '1G'
-
 # Use IoT-LAB authenticator
 if JUPYTERHUB_INSTANCE == 'mooc':
     c.JupyterHub.authenticator_class = 'iotlabauthenticator.IoTLABLTIAuthenticator'
@@ -42,6 +38,11 @@ c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 
 # Docker spawner configuration
 
+# Set some limit
+c.DockerSpawner.cpu_limit = 1
+c.DockerSpawner.mem_limit = '1G'
+
+# Docker image spawned
 c.DockerSpawner.image = JUPYTERLAB_DOCKER_IMAGE
 
 # tell the user containers to connect to our docker network
