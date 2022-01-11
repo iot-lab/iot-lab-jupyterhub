@@ -19,6 +19,10 @@ RUN apt-get update && \
         net-tools \
         openssh-client \
         socat \
+        texlive-fonts-recommended \
+        texlive-latex-recommended \
+        texlive-plain-generic \
+        texlive-xetex \
         unzip \
         vim \
         wget \
