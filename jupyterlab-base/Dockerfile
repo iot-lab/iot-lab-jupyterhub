@@ -62,19 +62,19 @@ RUN python3 -m pip install --no-cache \
     ed25519==1.5 \
     iotlabcli==3.2.1 \
     iotlabwscli==0.2.0 \
-    ipympl==0.8.2 \
+    ipympl==0.8.5 \
     ipywidgets==7.6.5 \
-    jupyterlab==2.3.2 \
-    matplotlib==3.5.0 \
-    numpy==1.21.4 \
+    jupyterlab==3.2.6 \
+    matplotlib==3.5.1 \
+    numpy==1.22.0 \
     oml-plot-tools==0.7.1 \
     paho-mqtt==1.6.1 \
-    pandas==1.3.4 \
+    pandas==1.3.5 \
     pycayennelpp==2.4.0 \
     python-cayennelpp==0.0.4 \
     scapy==2.4.5 \
     seaborn==0.11.2 \
-    scikit-learn==1.0.1 \
+    scikit-learn==1.0.2 \
     scipy==1.7.3
 
 # Add Jupyterlab interactive extensions
