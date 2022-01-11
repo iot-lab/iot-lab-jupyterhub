@@ -8,7 +8,8 @@ from requests.auth import HTTPBasicAuth
 from tornado.web import MissingArgumentError
 
 from jupyterhub.auth import Authenticator
-from ltiauthenticator import LTIAuthenticator, LTILaunchValidator
+from ltiauthenticator import LTIAuthenticator
+from ltiauthenticator.lti11.validator import LTI11LaunchValidator as LTILaunchValidator
 
 
 JUPYTERHUB_CRYPT_KEY = os.getenv("JUPYTERHUB_CRYPT_KEY", "")

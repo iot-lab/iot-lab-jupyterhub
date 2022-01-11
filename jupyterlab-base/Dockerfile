@@ -1,4 +1,4 @@
-ARG JUPYTERHUB_VERSION=1.2
+ARG JUPYTERHUB_VERSION=2.0.1
 FROM jupyterhub/singleuser:${JUPYTERHUB_VERSION}
 
 LABEL maintainer="alexandre.abadie@inria.fr"
