@@ -29,7 +29,7 @@ if JUPYTERHUB_INSTANCE == 'mooc':
     c.JupyterHub.authenticator_class = 'iotlabltiauthenticator'
 else:
     c.JupyterHub.authenticator_class = 'iotlabauthenticator'
-    c.Authenticator.admin_users = {'abadie'}
+    c.JupyterHub.admin_users = {'abadie'}
 
 c.Authenticator.enable_auth_state = True
 
