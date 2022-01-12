@@ -13,7 +13,7 @@ IOTLAB_API_URL = os.getenv('IOTLAB_API_URL', 'https://www.iot-lab.info/api/')
 IOTLAB_SITES = os.getenv('IOTLAB_SITES', 'grenoble,saclay')
 
 # General configuration
-
+c.NotebookApp.disable_check_xsrf = True
 c.JupyterHub.admin_access = True
 
 # hub listen ips
