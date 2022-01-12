@@ -14,6 +14,7 @@ IOTLAB_SITES = os.getenv('IOTLAB_SITES', 'grenoble,saclay')
 
 # General configuration
 
+c.JupyterHub.base_url = "/"
 c.JupyterHub.admin_access = True
 
 # hub listen ips
