@@ -59,9 +59,9 @@ c.DockerSpawner.debug = True
 # Ensure the user containers are removed after 1h of inactivity
 c.JupyterHub.services = [
     {
-        'name': 'cull_idle',
+        'name': 'idle-culler',
         'admin': True,
-        'command': 'python3 /srv/jupyterhub/cull_idle_servers.py --timeout=3600'.split(),
+        'command': [sys.executable, '-m', 'jupyterhub_idle_culler', '--timeout=3600'],
     },
     {
         'name': 'password',
@@ -71,6 +71,18 @@ c.JupyterHub.services = [
             'JUPYTERHUB_CRYPT_KEY': os.environ['JUPYTERHUB_CRYPT_KEY']
         }
     }
+]
+
+c.JupyterHub.load_roles = [
+    {
+        "name": "idle-culler",
+        "services": [
+            "idle-culler",
+        ],
+        "scopes": [
+            "list:users", "read:users:activity", "admin:servers",
+        ],
+    },
 ]
 
 WORK_DIR =  '/home/{}/work'.format(JUPYTERLAB_USERNAME)
