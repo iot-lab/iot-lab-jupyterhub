@@ -35,14 +35,12 @@ class PasswordHandler(HubAuthenticated, RequestHandler):
 
 def main():
     app = Application([
-        (os.environ['JUPYTERHUB_SERVICE_PREFIX'], PasswordHandler),
+        (os.environ.get('JUPYTERHUB_SERVICE_PREFIX', '/'), PasswordHandler),
         (r'.*', PasswordHandler),
     ])
 
     http_server = HTTPServer(app)
-    url = urlparse(os.environ['JUPYTERHUB_SERVICE_URL'])
-
-    http_server.listen(url.port, url.hostname)
+    http_server.listen(8000, "0.0.0.0")
 
     IOLoop.current().start()
 
