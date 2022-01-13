@@ -1,4 +1,4 @@
-ARG JUPYTERHUB_VERSION=2.0.2
+ARG JUPYTERHUB_VERSION=1.5
 FROM jupyterhub/singleuser:${JUPYTERHUB_VERSION}
 
 LABEL maintainer="alexandre.abadie@inria.fr"
@@ -82,6 +82,7 @@ RUN python3 -m pip install --no-cache \
     scipy==1.7.3
 
 # Add Jupyterlab interactive extensions
+RUN conda update -n base conda
 RUN conda install -c conda-forge nodejs
 RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager --minimize=False
 RUN jupyter labextension install jupyter-matplotlib --minimize=False

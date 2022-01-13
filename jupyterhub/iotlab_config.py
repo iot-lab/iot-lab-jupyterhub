@@ -30,7 +30,7 @@ if JUPYTERHUB_INSTANCE == 'mooc':
     c.JupyterHub.authenticator_class = 'iotlabltiauthenticator'
 else:
     c.JupyterHub.authenticator_class = 'iotlabauthenticator'
-    c.JupyterHub.admin_users = {'abadie'}
+    c.Authenticator.admin_users = {'abadie'}
 
 c.Authenticator.enable_auth_state = True
 
@@ -74,17 +74,18 @@ c.JupyterHub.services = [
     }
 ]
 
-c.JupyterHub.load_roles = [
-    {
-        "name": "idle-culler",
-        "services": [
-            "idle-culler",
-        ],
-        "scopes": [
-            "list:users", "read:users:activity", "admin:servers",
-        ],
-    },
-]
+# Ready to migrate to Jupyterhub 2 once their bugs are fixed
+# c.JupyterHub.load_roles = [
+#     {
+#         "name": "idle-culler",
+#         "services": [
+#             "idle-culler",
+#         ],
+#         "scopes": [
+#             "list:users", "read:users:activity", "admin:servers",
+#         ],
+#     },
+# ]
 
 WORK_DIR =  '/home/{}/work'.format(JUPYTERLAB_USERNAME)
 
