@@ -64,14 +64,14 @@ RUN python3 -m pip install --no-cache \
     cbor2==5.4.2 \
     cryptography==36.0.0 \
     ed25519==1.5 \
-    iotlabcli==3.2.1 \
+    iotlabcli==3.3.0 \
     iotlabwscli==0.2.0 \
     ipympl==0.8.5 \
     ipywidgets==7.6.5 \
     jupyterlab==3.2.6 \
     matplotlib==3.5.1 \
     numpy==1.22.0 \
-    oml-plot-tools==0.7.1 \
+    oml-plot-tools==0.8.0 \
     paho-mqtt==1.6.1 \
     pandas==1.3.5 \
     pycayennelpp==2.4.0 \
