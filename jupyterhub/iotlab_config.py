@@ -1,6 +1,8 @@
 import os
 import sys
 
+from docker.types import LogConfig
+
 # Retrieve useful environment variables
 DOCKER_NETWORK_NAME = os.getenv('DOCKER_NETWORK_NAME', 'jupyterhub')
 JUPYTERHUB_INSTANCE = os.getenv('JUPYTERHUB_INSTANCE', 'iotlab')
@@ -121,8 +123,20 @@ def spawner_hook(spawner):
     # Directly jump in the training directory
     spawner.notebook_dir = '{}/training'.format(WORK_DIR)
 
+    log_config = LogConfig(
+        type=LogConfig.types.SYSLOG,
+        config={
+            "tag": volume_name_template.format(
+                username=spawner.userdata['username']
+            )
+        }
+    )
+    spawner.extra_host_config.update({"log_config": log_config})
 
 c.DockerSpawner.pre_spawn_hook = spawner_hook
 
 # Fix for GDB and RIOT native
-c.DockerSpawner.extra_host_config = {"cap_add": "SYS_PTRACE", "security_opt": ["seccomp=unconfined"]}
+c.DockerSpawner.extra_host_config = {
+    "cap_add": "SYS_PTRACE",
+    "security_opt": ["seccomp=unconfined"],
+}
