@@ -11,6 +11,7 @@ JUPYTERHUB_HUB_IP = os.getenv('JUPYTERHUB_HUB_IP', '0.0.0.0')
 JUPYTERLAB_USERNAME = os.getenv('JUPUTERLAB_USERNAME', 'jovyan')
 JUPYTERLAB_DOCKER_IMAGE = os.getenv('JUPYTERLAB_DOCKER_IMAGE',
                                     'aabadie/iot-lab-training-notebooks')
+IOTLAB_USE_CUSTOM_API_URL = bool(os.getenv('IOTLAB_API_URL', 0))
 IOTLAB_API_URL = os.getenv('IOTLAB_API_URL', 'https://www.iot-lab.info/api/')
 IOTLAB_SITES = os.getenv('IOTLAB_SITES', 'grenoble,saclay')
 
@@ -116,9 +117,10 @@ def spawner_hook(spawner):
         'AUTHENTICATOR': spawner.userdata['authenticator'],
         'IOTLAB_LOGIN': spawner.userdata['username'],
         'IOTLAB_PASSWORD': spawner.userdata['password'],
-        'IOTLAB_API_URL': IOTLAB_API_URL,
         'IOTLAB_SITES': IOTLAB_SITES,
     }
+    if IOTLAB_USE_CUSTOM_API_URL is True:
+        spawner.environment.update({'IOTLAB_API_URL': IOTLAB_API_URL})
 
     # Directly jump in the training directory
     spawner.notebook_dir = '{}/training'.format(WORK_DIR)
