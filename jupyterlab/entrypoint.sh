@@ -21,7 +21,7 @@ then
         echo "SSH key already exists"
     fi
     ln -sf /home/${NB_USER}/work/.ssh /home/${NB_USER}/.ssh
-    iotlab-auth -u ${IOTLAB_LOGIN} -p ${IOTLAB_PASSWORD} --add-ssh-key
+    iotlab-auth --user="${IOTLAB_LOGIN}" --password="${IOTLAB_PASSWORD}" --add-ssh-key
     echo "Configure IoT-LAB access on $(echo ${IOTLAB_SITES} | sed -e s'/,/, /g') sites"
     for site in $(echo ${IOTLAB_SITES} | tr , ' ')
     do
