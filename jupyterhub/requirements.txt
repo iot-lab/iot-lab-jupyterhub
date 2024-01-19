@@ -1,4 +1,4 @@
 dockerspawner==12.1.0
 iotlabcli==3.3.0
-jupyterlab==3.2.6
+jupyterlab==3.6.7
 jupyterhub-idle-culler==1.2.1
