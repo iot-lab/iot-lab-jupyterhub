@@ -39,6 +39,7 @@ then
 fi
 
 jupyter labextension enable jupyterlab_jupytext
+jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 
 echo "All done, starting jupyterlab..."
 # Run the command provided
