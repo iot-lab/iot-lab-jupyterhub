@@ -1,18 +1,40 @@
 {% extends "templates/login.html" %}
 {% block login %}
 <div class='container iotlab'>
-    <!-- <div class='iotlab'> -->
-        <span class='logo'><img src='https://www.iot-lab.info/testbed/img/disc-iotlab.5bdbd373.svg'></span>
-        <span class='welcome'>
-            <b>Welcome to the IoT-LAB JupyterHub!</b><br/>
-            Use your IoT-LAB credentials to login.<br/><br/>
-
-            You can create an account <a href="https://www.iot-lab.info/testbed/signup">here</a>.
-        </span>
-    <!-- </div> -->
+    <div class='logo'>
+        <img id='iotlab-logo' src='https://www.iot-lab.info/assets/images/slices-ri_black.png' alt='Slices IoT logo'>
+    </div>
+    <div class='welcome'>
+        <h2>Welcome to the Slices IoT JupyterHub!</h2>
+        <p>Use your Slices IoT credentials to login.</p>
+        <p>You can create an account <a href="https://www.iot-lab.info/testbed/signup">here</a>.</p>
+    </div>
 </div>
 
 {{ super() }}
+
+<script>
+(function () {
+    var LOGO_LIGHT = 'https://www.iot-lab.info/assets/images/slices-ri_black.png';
+    var LOGO_DARK  = 'https://www.iot-lab.info/assets/images/slices-ri_white.png';
+
+    function applyTheme(theme) {
+        var img = document.getElementById('iotlab-logo');
+        if (!img) return;
+        img.src = theme === 'dark' ? LOGO_DARK : LOGO_LIGHT;
+    }
+
+    function currentTheme() {
+        return document.documentElement.getAttribute('data-bs-theme') || 'light';
+    }
+
+    applyTheme(currentTheme());
+
+    new MutationObserver(function () {
+        applyTheme(currentTheme());
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+})();
+</script>
 
 {% endblock %}
 
@@ -21,8 +43,12 @@
 <style>
 
 .iotlab {
-    width: 450px;
-    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px 16px 16px;
+    width: 100%;
 }
 
 #login-main {
@@ -30,27 +56,42 @@
     height: 100%;
 }
 
-.logo img {
-    display: block;
-    width: 90px;
+.iotlab .logo {
+    margin-bottom: 20px;
 }
 
-span.welcome  {
-    float: right;
+.iotlab .logo img {
     display: block;
-    margin: 0 auto 0 auto;
-    padding: 5px 5px;
-    text-align: center;
-    margin-right: 25px;
-    margin-top: 10px;
+    width: 240px;
+    max-width: 100%;
+    height: auto;
 }
 
- span.logo {
-    float: left;
-    display: block;
-    margin: 0 auto 0 auto;
-    padding: 5px 5px;
-    margin-left: 25px;
+.iotlab .welcome h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.iotlab .welcome p {
+    font-size: 0.95rem;
+    margin: 4px 0;
+}
+
+[data-bs-theme="light"] .iotlab .welcome h2 {
+    color: #444;
+}
+
+[data-bs-theme="light"] .iotlab .welcome p {
+    color: #888;
+}
+
+[data-bs-theme="dark"] .iotlab .welcome h2 {
+    color: #e8e8e8;
+}
+
+[data-bs-theme="dark"] .iotlab .welcome p {
+    color: #aaa;
 }
 
 </style>
