@@ -1,5 +1,5 @@
-ARG JUPYTERHUB_VERSION=1.5
-FROM jupyterhub/singleuser:${JUPYTERHUB_VERSION}
+ARG JUPYTERHUB_VERSION=5
+FROM quay.io/jupyterhub/singleuser:${JUPYTERHUB_VERSION}
 
 LABEL maintainer="alexandre.abadie@inria.fr"
 
@@ -31,16 +31,16 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ARM Toolchain
-ARG ARM_URLBASE=https://developer.arm.com/-/media/Files/downloads/gnu-rm
-ARG ARM_URL=${ARM_URLBASE}/9-2019q4/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2
-ARG ARM_MD5=fe0029de4f4ec43cf7008944e34ff8cc
-ARG ARM_FOLDER=gcc-arm-none-eabi-9-2019-q4-major
+ARG ARM_URLBASE=https://developer.arm.com/-/media/Files/downloads/gnu
+ARG ARM_URL=${ARM_URLBASE}/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi.tar.xz
+ARG ARM_SHA256=62a63b981fe391a9cbad7ef51b17e49aeaa3e7b0d029b36ca1e9c3b2a9b78823
+ARG ARM_FOLDER=arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi
 RUN mkdir -p /opt && \
-    curl -L -o /opt/gcc-arm-none-eabi.tar.bz2 ${ARM_URL} && \
-    echo "${ARM_MD5} /opt/gcc-arm-none-eabi.tar.bz2" | md5sum -c && \
-    tar -C /opt -jxf /opt/gcc-arm-none-eabi.tar.bz2 && \
-    rm -f /opt/gcc-arm-none-eabi.tar.bz2 && \
-    rm -rf /opt/gcc-arm-none-eabi-*/share/doc
+    curl -L -o /opt/gcc-arm-none-eabi.tar.xz ${ARM_URL} && \
+    echo "${ARM_SHA256}  /opt/gcc-arm-none-eabi.tar.xz" | sha256sum -c && \
+    tar -C /opt -xf /opt/gcc-arm-none-eabi.tar.xz && \
+    rm -f /opt/gcc-arm-none-eabi.tar.xz && \
+    rm -rf /opt/${ARM_FOLDER}/share/doc
 
 ENV PATH ${PATH}:/opt/${ARM_FOLDER}/bin
 
@@ -56,37 +56,36 @@ RUN mkdir -p /opt && \
 
 # Python packages
 RUN python3 -m pip install --no-cache \
-    aiocoap==0.4.3 \
+    aiocoap==0.4.17 \
     asynchttp==0.0.4 \
-    asyncssh==2.2.0 \
-    azure-iot-device==2.1.1 \
+    asyncssh==2.23.0 \
     cbor==1.0.0 \
-    cbor2==5.4.2 \
-    cryptography==36.0.0 \
-    ed25519==1.5 \
-    iotlabcli==3.3.0 \
-    iotlabwscli==0.2.0 \
-    ipympl==0.8.5 \
-    ipywidgets==7.6.5 \
-    jupyterlab==3.2.6 \
-    matplotlib==3.5.1 \
-    numpy==1.22.0 \
-    oml-plot-tools==0.8.0 \
-    paho-mqtt==1.6.1 \
-    pandas==1.3.5 \
+    cbor2==6.1.1 \
+    cryptography==48.0.0 \
+    git+https://github.com/iot-lab/cli-tools.git@master \
+    git+https://github.com/iot-lab/ws-cli-tools.git@master \
+    ipympl==0.10.0 \
+    ipywidgets==8.1.8 \
+    jupyterlab==4.5.7 \
+    matplotlib==3.10.9 \
+    numpy==2.4.6 \
+    git+https://github.com/iot-lab/oml-plot-tools.git@master \
+    paho-mqtt==2.1.0 \
+    pandas==3.0.3 \
     pycayennelpp==2.4.0 \
-    python-cayennelpp==0.0.4 \
-    scapy==2.4.5 \
-    seaborn==0.11.2 \
-    scikit-learn==1.0.2 \
-    scipy==1.7.3
+    python-cayennelpp==0.1.0 \
+    scapy==2.7.0 \
+    seaborn==0.13.2 \
+    scikit-learn==1.8.0 \
+    scipy==1.17.1
 
-# Add Jupyterlab interactive extensions
-RUN conda update -n base conda
-RUN conda install -c conda-forge nodejs
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager --minimize=False
-RUN jupyter labextension install jupyter-matplotlib --minimize=False
-RUN jupyter nbextension enable --py widgetsnbextension
+# JupyterLab 4.x: extensions are distributed as pip packages with prebuilt assets
+RUN python3 -m pip install --no-cache jupyterlab-widgets jupytext jupyter_contrib_nbextensions
+
+# Set markdown files to open as Jupytext notebooks by default
+RUN mkdir -p /opt/conda/share/jupyter/lab/settings && \
+    echo '{"@jupyterlab/docmanager-extension:plugin": {"defaultViewers": {"markdown": "Jupytext Notebook"}}}' \
+    > /opt/conda/share/jupyter/lab/settings/overrides.json
 
 # Don't show conda env in prompt by default
 RUN conda config --set changeps1 False

@@ -36,14 +36,9 @@ then
         echo "Training directory already exists"
     fi
 
-    if [[ ${AUTHENTICATOR} == "mooc" ]]
-    then
-        echo "Configure custom jupyter for Mooc"
-        cp -R /opt/custom_jupyter /home/${NB_USER}/.jupyter/custom
-    else
-        echo "Regular IoT-LAB user"
-    fi
 fi
+
+jupyter labextension enable jupyterlab_jupytext
 
 echo "All done, starting jupyterlab..."
 # Run the command provided

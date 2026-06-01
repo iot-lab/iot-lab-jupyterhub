@@ -1,4 +1,3 @@
 from iotlabauthenticator.iotlabauthenticator import IoTLABAuthenticator
-from iotlabauthenticator.iotlabltiauthenticator import IoTLABLTIAuthenticator
 
-__all__ = [IoTLABAuthenticator, IoTLABLTIAuthenticator]
+__all__ = [IoTLABAuthenticator]

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "iotlabauthenticator"
+version = "0.1"
+description = "IoT-LAB Authenticator for JupyterHub"
+license = { text = "BSD-3-Clause" }
+authors = [{ name = "IoT-LAB developers", email = "admin@iot-lab.info" }]
+
+[project.urls]
+Homepage = "https://github.com/iot-lab/iot-lab-jupyterhub"
+
+[project.entry-points."jupyterhub.authenticators"]
+iotlabauthenticator = "iotlabauthenticator:IoTLABAuthenticator"

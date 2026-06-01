@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   jupyterhub-iotlab:
     user: 0:0
@@ -11,7 +9,6 @@ services:
     container_name: jupyterhub-iotlab
     environment:
       - DOCKER_NETWORK_NAME=${COMPOSE_PROJECT_NAME}_default
-      - JUPYTERHUB_INSTANCE=iotlab
       - JUPYTERHUB_TRAINING_DIR
       - JUPYTERHUB_CRYPT_KEY
       - JUPYTERLAB_DOCKER_IMAGE
@@ -22,8 +19,6 @@ services:
       # Bind Docker socket on the host so we can connect to the daemon from
       # within the container
       - /var/run/docker.sock:/var/run/docker.sock:rw
-      # Bind local services with Jupyterhub services inside container
-      - ./jupyterhub/services:/srv/jupyterhub/services
 
     command: >
       jupyterhub -f /srv/jupyterhub/iotlab_config.py --log-level=${JUPYTERHUB_DEBUG_LEVEL}
@@ -31,43 +26,6 @@ services:
       driver: syslog
       options:
         tag: jupyterhub-iotlab
-    restart: always
-
-  jupyterhub-mooc:
-    user: 0:0
-    ports:
-      - 8800:8000
-    build:
-      context: jupyterhub
-    image: fitiotlab/iot-lab-jupyterhub
-    container_name: jupyterhub-mooc
-    environment:
-      - DOCKER_NETWORK_NAME=${COMPOSE_PROJECT_NAME}_default
-      - JUPYTERHUB_INSTANCE=mooc
-      - JUPYTERHUB_TRAINING_DIR
-      - JUPYTERHUB_CRYPT_KEY
-      - JUPYTERLAB_DOCKER_IMAGE
-      - JUPYTERLAB_USERNAME
-      - IOTLAB_USE_CUSTOM_API_URL
-      - IOTLAB_API_URL
-      - IOTLAB_SITES
-      - IOTLAB_ADMIN_USER
-      - IOTLAB_ADMIN_PASSWORD
-      - LTI_KEY
-      - LTI_SECRET
-    volumes:
-      # Bind Docker socket on the host so we can connect to the daemon from
-      # within the container
-      - /var/run/docker.sock:/var/run/docker.sock:rw
-      # Bind local services with Jupyterhub services inside container
-      - ./jupyterhub/services:/srv/jupyterhub/services
-
-    command: >
-      jupyterhub -f /srv/jupyterhub/iotlab_config.py --log-level=${JUPYTERHUB_DEBUG_LEVEL}
-    logging:
-      driver: syslog
-      options:
-        tag: jupyterhub-mooc
     restart: always
 
   jupyterlab-base:

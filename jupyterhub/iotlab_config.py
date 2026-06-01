@@ -4,47 +4,43 @@ import sys
 from docker.types import LogConfig
 
 # Retrieve useful environment variables
-DOCKER_NETWORK_NAME = os.getenv('DOCKER_NETWORK_NAME', 'jupyterhub')
-JUPYTERHUB_INSTANCE = os.getenv('JUPYTERHUB_INSTANCE', 'iotlab')
-JUPYTERHUB_TRAINING_DIR = os.getenv('JUPYTERHUB_TRAINING_DIR', '/tmp/iot-lab-training')
-JUPYTERHUB_HUB_IP = os.getenv('JUPYTERHUB_HUB_IP', '0.0.0.0')
-JUPYTERLAB_USERNAME = os.getenv('JUPUTERLAB_USERNAME', 'jovyan')
-JUPYTERLAB_DOCKER_IMAGE = os.getenv('JUPYTERLAB_DOCKER_IMAGE',
-                                    'aabadie/iot-lab-training-notebooks')
-IOTLAB_USE_CUSTOM_API_URL = bool(os.getenv('IOTLAB_API_URL', 0))
-IOTLAB_API_URL = os.getenv('IOTLAB_API_URL', 'https://www.iot-lab.info/api/')
-IOTLAB_SITES = os.getenv('IOTLAB_SITES', 'grenoble,saclay')
+DOCKER_NETWORK_NAME = os.getenv("DOCKER_NETWORK_NAME", "jupyterhub")
+JUPYTERHUB_TRAINING_DIR = os.getenv("JUPYTERHUB_TRAINING_DIR", "/tmp/iot-lab-training")
+JUPYTERHUB_HUB_IP = os.getenv("JUPYTERHUB_HUB_IP", "0.0.0.0")
+JUPYTERLAB_USERNAME = os.getenv("JUPUTERLAB_USERNAME", "jovyan")
+JUPYTERLAB_DOCKER_IMAGE = os.getenv(
+    "JUPYTERLAB_DOCKER_IMAGE", "aabadie/iot-lab-training-notebooks"
+)
+IOTLAB_USE_CUSTOM_API_URL = bool(os.getenv("IOTLAB_API_URL", 0))
+IOTLAB_API_URL = os.getenv("IOTLAB_API_URL", "https://www.iot-lab.info/api/")
+IOTLAB_SITES = os.getenv("IOTLAB_SITES", "grenoble,saclay")
 
 # General configuration
-
 c.JupyterHub.base_url = "/"
-c.JupyterHub.admin_access = True
 
 # hub listen ips
-c.JupyterHub.hub_ip = 'jupyterhub-{}'.format(JUPYTERHUB_INSTANCE)
+c.JupyterHub.hub_ip = "jupyterhub-iotlab"
 # hub hostname/ip
-c.JupyterHub.hub_connect_ip = 'jupyterhub-{}'.format(JUPYTERHUB_INSTANCE)
+c.JupyterHub.hub_connect_ip = "jupyterhub-iotlab"
 
 # Add path for IoT-LAB custom template
-c.JupyterHub.template_paths=['iotlab_template/.']
+c.JupyterHub.template_paths = ["iotlab_template/."]
 
 # Use IoT-LAB authenticator
-if JUPYTERHUB_INSTANCE == 'mooc':
-    c.JupyterHub.authenticator_class = 'iotlabltiauthenticator'
-else:
-    c.JupyterHub.authenticator_class = 'iotlabauthenticator'
-    c.Authenticator.admin_users = {'abadie'}
+c.JupyterHub.authenticator_class = "iotlabauthenticator"
+c.Authenticator.allow_all = True
+c.Authenticator.admin_users = {"abadie"}
 
 c.Authenticator.enable_auth_state = True
 
 # Use Docker spawner
-c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+c.JupyterHub.spawner_class = "dockerspawner.DockerSpawner"
 
 # Docker spawner configuration
 
 # Set some limit
 c.DockerSpawner.cpu_limit = 1
-c.DockerSpawner.mem_limit = '1G'
+c.DockerSpawner.mem_limit = "1G"
 
 # Docker image spawned
 c.DockerSpawner.image = JUPYTERLAB_DOCKER_IMAGE
@@ -56,49 +52,37 @@ c.DockerSpawner.network_name = DOCKER_NETWORK_NAME
 c.DockerSpawner.remove = True
 
 # Use jupyterlab by default
-c.Spawner.default_url = '/lab'
+c.Spawner.default_url = "/lab"
 
 c.DockerSpawner.debug = True
 
 # Ensure the user containers are removed after 1h of inactivity
 c.JupyterHub.services = [
     {
-        'name': 'idle-culler',
-        'admin': True,
-        'command': [sys.executable, '-m', 'jupyterhub_idle_culler', '--timeout=3600'],
+        "name": "idle-culler",
+        "command": [sys.executable, "-m", "jupyterhub_idle_culler", "--timeout=3600"],
     },
-    {
-        'name': 'password',
-        'url': 'http://127.0.0.1:10101',
-        'command': [sys.executable, '/srv/jupyterhub/services/password/password.py'],
-        'environment': {
-            'JUPYTERHUB_CRYPT_KEY': os.environ['JUPYTERHUB_CRYPT_KEY']
-        }
-    }
 ]
 
-# Ready to migrate to Jupyterhub 2 once their bugs are fixed
-# c.JupyterHub.load_roles = [
-#     {
-#         "name": "idle-culler",
-#         "services": [
-#             "idle-culler",
-#         ],
-#         "scopes": [
-#             "list:users", "read:users:activity", "admin:servers",
-#         ],
-#     },
-# ]
+c.JupyterHub.load_roles = [
+    {
+        "name": "idle-culler",
+        "services": [
+            "idle-culler",
+        ],
+        "scopes": [
+            "list:users",
+            "read:users:activity",
+            "admin:servers",
+        ],
+    },
+]
 
-WORK_DIR =  '/home/{}/work'.format(JUPYTERLAB_USERNAME)
-
-volume_name_template = 'jupyterhub-user-{username}'
-if JUPYTERHUB_INSTANCE == 'mooc':
-    volume_name_template = 'jupyterhub-user-mooc-{username}'
+WORK_DIR = "/home/{}/work".format(JUPYTERLAB_USERNAME)
 
 c.DockerSpawner.volumes = {
-    JUPYTERHUB_TRAINING_DIR: '/opt/training',
-    volume_name_template: WORK_DIR,
+    JUPYTERHUB_TRAINING_DIR: "/opt/training",
+    "jupyterhub-user-{username}": WORK_DIR,
 }
 
 
@@ -114,26 +98,22 @@ def spawner_hook(spawner):
     """Add some custom logic just before launching the user container"""
 
     spawner.environment = {
-        'AUTHENTICATOR': spawner.userdata['authenticator'],
-        'IOTLAB_LOGIN': spawner.userdata['username'],
-        'IOTLAB_PASSWORD': spawner.userdata['password'],
-        'IOTLAB_SITES': IOTLAB_SITES,
+        "IOTLAB_LOGIN": spawner.userdata["username"],
+        "IOTLAB_PASSWORD": spawner.userdata["password"],
+        "IOTLAB_SITES": IOTLAB_SITES,
     }
     if IOTLAB_USE_CUSTOM_API_URL is True:
-        spawner.environment.update({'IOTLAB_API_URL': IOTLAB_API_URL})
+        spawner.environment.update({"IOTLAB_API_URL": IOTLAB_API_URL})
 
     # Directly jump in the training directory
-    spawner.notebook_dir = '{}/training'.format(WORK_DIR)
+    spawner.notebook_dir = "{}/training".format(WORK_DIR)
 
     log_config = LogConfig(
         type=LogConfig.types.SYSLOG,
-        config={
-            "tag": volume_name_template.format(
-                username=spawner.userdata['username']
-            )
-        }
+        config={"tag": "jupyterhub-user-{}".format(spawner.userdata["username"])},
     )
     spawner.extra_host_config.update({"log_config": log_config})
+
 
 c.DockerSpawner.pre_spawn_hook = spawner_hook
 

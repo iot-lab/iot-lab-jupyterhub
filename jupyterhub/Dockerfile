@@ -1,5 +1,5 @@
-ARG JUPYTERHUB_VERSION=1.5
-FROM jupyterhub/jupyterhub:${JUPYTERHUB_VERSION}
+ARG JUPYTERHUB_VERSION=5
+FROM quay.io/jupyterhub/jupyterhub:${JUPYTERHUB_VERSION}
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -24,7 +24,9 @@ COPY templates/login.html /srv/jupyterhub/iotlab_template/login.html
 # Create user with same uid as the one used in jupyterlab containers
 # This ensures the iotlabrc and file .ssh directory have the right ownership.
 ARG NB_UID=1000
-RUN adduser --disabled-password \
+RUN existing=$(getent passwd ${NB_UID} | cut -d: -f1) && \
+    [ -n "$existing" ] && userdel "$existing" || true && \
+    adduser --disabled-password \
     --gecos "Iotlab user" \
     --uid ${NB_UID} \
     iotlab

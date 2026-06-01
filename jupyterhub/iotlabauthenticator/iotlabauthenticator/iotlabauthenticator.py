@@ -1,30 +1,28 @@
-from jupyterhub.auth import Authenticator
-
-from tornado import gen
-
 from iotlabcli.rest import Api
+
+from jupyterhub.auth import Authenticator
 
 
 class IoTLABAuthenticator(Authenticator):
 
     async def authenticate(self, handler, data):
-        _username = data['username'].strip()
-        _password = data['password']
-        if '@' in _username:
+        _username = data["username"].strip()
+        _password = data["password"]
+        if "@" in _username:
             # Prevent use of email as login
             return None
         api = Api(_username, _password)
         try:
             if api.check_credential():
                 ret = {
-                    'name': _username,
-                    'auth_state': {
-                        'userdata': {
-                            'authenticator': 'iotlab',
-                            'username': _username,
-                            'password': _password,
+                    "name": _username,
+                    "auth_state": {
+                        "userdata": {
+                            "authenticator": "iotlab",
+                            "username": _username,
+                            "password": _password,
                         }
-                    }
+                    },
                 }
                 return ret
         except:
