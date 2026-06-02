@@ -40,7 +40,7 @@ c.JupyterHub.spawner_class = "dockerspawner.DockerSpawner"
 
 # Set some limit
 c.DockerSpawner.cpu_limit = 1
-c.DockerSpawner.mem_limit = "1G"
+c.DockerSpawner.mem_limit = "2G"
 
 # Docker image spawned
 c.DockerSpawner.image = JUPYTERLAB_DOCKER_IMAGE
