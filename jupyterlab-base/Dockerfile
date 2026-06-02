@@ -10,14 +10,18 @@ RUN apt-get update && \
         bsdmainutils \
         build-essential \
         ca-certificates \
+        clang \
         curl \
         git \
         g++-multilib \
         iproute2 \
         iputils-ping \
+        make \
         mosquitto-clients \
         net-tools \
+        ninja-build \
         openssh-client \
+        pkg-config \
         socat \
         texlive-fonts-recommended \
         texlive-latex-recommended \
@@ -53,6 +57,24 @@ RUN mkdir -p /opt && \
     tar -C /opt -jxf ${ARM_GCC_ARCHIVE} && \
     rm -f ${ARM_GCC_ARCHIVE} && \
     rm -rf /opt/gcc-arm-none-eabi-*/share/doc
+
+# Rust toolchain with ARM embedded targets
+USER jovyan
+ENV PATH=/home/jovyan/.cargo/bin:${PATH}
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
+    sh -s -- -y --no-modify-path --profile minimal --default-toolchain stable && \
+    rustup target add \
+        thumbv6m-none-eabi \
+        thumbv7m-none-eabi \
+        thumbv7em-none-eabi \
+        thumbv7em-none-eabihf \
+        thumbv8m.base-none-eabi \
+        thumbv8m.main-none-eabi \
+        thumbv8m.main-none-eabihf && \
+    rm -rf /home/jovyan/.cargo/registry /home/jovyan/.cargo/git
+# Install laze, a build system for embedded Rust projects that can speed up compilation by caching build artifacts
+RUN cargo install laze
+USER root
 
 # Python packages
 RUN python3 -m pip install --no-cache \
