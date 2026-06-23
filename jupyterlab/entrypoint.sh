@@ -20,8 +20,18 @@ then
     fi
     ln -sf /home/${NB_USER}/work/.ssh /home/${NB_USER}/.ssh
 
-    # Run slow network operations and training dir setup in the background so
-    # JupyterLab can start immediately without waiting for them.
+    # The training directory must exist before JupyterLab starts because it is
+    # used as the server root_dir, so bootstrap it synchronously here.
+    if [ ! -d /home/${NB_USER}/work/training ]
+    then
+        echo "Bootstraping training directory for user '${IOTLAB_LOGIN}'"
+        cp -R /opt/training /home/${NB_USER}/work/training
+    else
+        echo "Training directory already exists"
+    fi
+
+    # Run slow network operations in the background so JupyterLab can start
+    # immediately without waiting for them.
     (
         iotlab-auth --user="${IOTLAB_LOGIN}" --password="${IOTLAB_PASSWORD}" --add-ssh-key
         echo "Configure IoT-LAB access on $(echo ${IOTLAB_SITES} | sed -e s'/,/, /g') sites"
@@ -29,14 +39,6 @@ then
         do
             scp -o "ConnectTimeout 3" -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" /home/${NB_USER}/.iotlabrc ${IOTLAB_LOGIN}@${site}.iot-lab.info:.iotlabrc || echo "Cannot connect to ${site}";
         done
-
-        if [ ! -d /home/${NB_USER}/work/training ]
-        then
-            echo "Bootstraping training directory for user '${IOTLAB_LOGIN}'"
-            cp -R /opt/training /home/${NB_USER}/work/training
-        else
-            echo "Training directory already exists"
-        fi
     ) &
 
 fi
