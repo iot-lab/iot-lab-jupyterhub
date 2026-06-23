@@ -73,7 +73,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
         thumbv8m.main-none-eabihf && \
     rm -rf /home/jovyan/.cargo/registry /home/jovyan/.cargo/git
 # Install laze, a build system for embedded Rust projects that can speed up compilation by caching build artifacts
-RUN cargo install laze
+RUN cargo install git-cache laze
 USER root
 
 # Python packages
@@ -95,6 +95,7 @@ RUN python3 -m pip install --no-cache \
     paho-mqtt==2.1.0 \
     pandas==3.0.3 \
     pycayennelpp==2.4.0 \
+    pyserial==3.5 \
     python-cayennelpp==0.1.0 \
     scapy==2.7.0 \
     seaborn==0.13.2 \
